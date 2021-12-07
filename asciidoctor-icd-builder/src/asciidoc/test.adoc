@@ -7,7 +7,13 @@ Firstname Lastname <author@asciidoctor.org>
 
 Content entered directly below the header but before the first section heading is called the preamble.
 
+Writing an AsciiDoctor extension using Java is easy! Ask twitter:mrhaki[] about it.
+
+This is a user manual for an empty project.
+
 == First level heading
+
+
 
 This is a paragraph with a *bold* word and an _italicized_ word.
 
