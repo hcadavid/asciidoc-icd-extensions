@@ -1,0 +1,1 @@
+mvn -DASCIIDOC_SOURCE_PATH=/Users/hcadavid/RUG-local/DaC-asciidoctor-extensions-baseline/htmlr/sample-doc -DOUTPUT_PATH=/Users/hcadavid/RUG-local/DaC-asciidoctor-extensions-baseline/htmlr/htmlr

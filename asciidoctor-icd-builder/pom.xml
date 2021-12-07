@@ -36,8 +36,10 @@
                             <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${basedir}/src/asciidoc</sourceDirectory>
-                            <outputDirectory>${basedir}/html</outputDirectory> 
+                            <!--<sourceDirectory>${basedir}/src/asciidoc</sourceDirectory>-->
+                            <!--<outputDirectory>${basedir}/html</outputDirectory>-->
+                            <sourceDirectory>${ASCIIDOC_SOURCE_PATH}</sourceDirectory>
+                            <outputDirectory>${OUTPUT_PATH}</outputDirectory>
                             <backend>html5</backend>
                             <attributes> 
                                 <source-highlighter>coderay</source-highlighter>
