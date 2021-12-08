@@ -2,4 +2,4 @@
 
 2. Run a disposable container of the image, mapping the path '/adocsrc' with the asciidoctor sources and '/adocout' with the output path in the host.
 
-docker run asciidocext:1.0 -d -v /tmp/adoc/:/adocsrc -v ~/temp/htmlr:/adocout
+docker run --rm -it --mount type=bind,source=/tmp/adoc,target=/adocsrc --mount type=bind,source=/tmp/htmlr,target=/adocout  asciidocext:1.0
