@@ -1,0 +1,2 @@
+#!/bin/bash
+mvn -DASCIIDOC_SOURCE_PATH=$1 -DOUTPUT_PATH=$2

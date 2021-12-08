@@ -1,1 +1,5 @@
-mvn -DASCIIDOC_SOURCE_PATH=$PWD/sample-doc -DOUTPUT_PATH=$PWD/htmlr
+1. Build the image
+
+2. Run a disposable container of the image, mapping the path '/adocsrc' with the asciidoctor sources and '/adocout' with the output path in the host.
+
+docker run asciidocext:1.0 -d -v /tmp/adoc/:/adocsrc -v ~/temp/htmlr:/adocout
