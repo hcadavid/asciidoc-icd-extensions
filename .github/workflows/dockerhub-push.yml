@@ -13,10 +13,12 @@ jobs:
     runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
+    - name: Docker login
       env:
         DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
-        DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}        
-      run: docker build . --file Dockerfile --tag hectorcadavid/asciidoctor-icd-extensions:latest
+        DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}     
+      run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Build the Docker image        
+      run: docker build . --file Dockerfile --tag hectorcadavid/asciidoctor-icd-ext:latest
     - name: Docker push
-      run: docker push hectorcadavid/asciidoctor-icd-extensions:latest
+      run: docker push hectorcadavid/asciidoctor-icd-ext:latest
