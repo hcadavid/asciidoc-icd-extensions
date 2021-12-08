@@ -19,4 +19,4 @@ jobs:
         DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}        
       run: docker build . --file Dockerfile --tag hectorcadavid/asciidoctor-icd-extensions:$(date +%s)
     - name: Docker push
-      run: docker push hectorcadavid/asciidoctor-icd-extensions
+      run: docker push hectorcadavid/asciidoctor-icd-extensions:$(date +%s)
