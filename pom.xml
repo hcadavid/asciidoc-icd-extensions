@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>asciidoctorj-extensions-logger</module>
         <module>asciidoctorj-twitter-extension</module>
         <module>asciidoctor-icd-builder</module>
         <module>Dummy-extension</module>
