@@ -32,9 +32,11 @@ public class DummyMacro extends InlineMacroProcessor {
         String twitterLink=null;
         String twitterLinkText=null;
                         
+        System.out.println(">>>>>>!!!!");
+        
         if (macroValue == null || macroValue.isEmpty() || macroValue.equals("dummy")) {
-            LogRecord lr=new LogRecord(Severity.ERROR, "Dummy is not a valid word for dummy extension");
-            logger.log(lr);
+            LogRecord lr=new LogRecord(Severity.ERROR, "Dummy is not a valid word for dummy extension");            
+            logger.log(lr);            
         } else {
             twitterLink = "https://www.twitter.com/" + macroValue;
             // Prepend twitterHandle with @ as text link:

@@ -7,7 +7,7 @@ Firstname Lastname <author@asciidoctor.org>
 
 Content entered directly below the header but before the first section heading is called the preamble.
 
-Using a dummy extension dummy:mrhaki[]
+Using a dummy extension dummy:dummy[]
 
 XXXXX 
 
