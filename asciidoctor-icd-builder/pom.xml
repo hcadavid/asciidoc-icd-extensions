@@ -18,16 +18,33 @@
                 <artifactId>asciidoctor-maven-plugin</artifactId>
                 <version>2.2.1</version>
                 
-                <!-- Twitter extension for AsciidoctorJ -->
+                
                 <dependencies>
+                    
+                    <!-- Twitter extension for AsciidoctorJ -->
+                    
                     <dependency>
                         <groupId>org.asciidoctor.maven</groupId>
                         <artifactId>asciidoctorj-twitter-extension</artifactId>
                         <version>1.0.0-SNAPSHOT</version>
                     </dependency>
+                    
+                    <!-- Dummy extension for AsciidoctorJ -->                
+                    <dependency>
+                        <groupId>rug.icdtools</groupId>
+                        <artifactId>Dummy-extension</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                    </dependency>
+                
                 </dependencies>
                                 
                 
+
+
+    
+
+                
+                                                
                 <executions>
                     <execution>
                         <id>convert-to-html</id>
