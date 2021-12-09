@@ -19,6 +19,14 @@
             <artifactId>asciidoctorj</artifactId>
             <version>${asciidoctorj.version}</version>
         </dependency>
+        
+        <!--logging for extensions -->
+        <dependency>                        
+            <groupId>rug.icdtools</groupId>
+            <artifactId>asciidoctorj-extensions-logger</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        
     </dependencies>
     <build>
         <defaultGoal>compile</defaultGoal>

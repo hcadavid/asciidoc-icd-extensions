@@ -19,6 +19,9 @@
             <artifactId>asciidoctorj</artifactId>
             <version>${asciidoctorj.version}</version>
         </dependency>
+        
+
+        
     </dependencies>
     <build>
         <defaultGoal>compile</defaultGoal>
