@@ -99,3 +99,20 @@ The text at the end of this sentence is cross referenced to <<_third_level_headi
 
 This is a link to the https://docs.asciidoctor.org/home/[Asciidoctor documentation].
 This is an attribute reference {url-quickref}[that links this text to the AsciiDoc Syntax Quick Reference].
+
+
+[plantuml,auth-protocol-plantuml]
+
+skinparam roundcorner 20
+skinparam sequence {
+  BackgroundColor PaleGreen
+  ArrowColor SeaGreen
+  BorderColor SpringGreen
+}
+
+actor Bob #blue
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
