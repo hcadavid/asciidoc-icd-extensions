@@ -1,3 +1,10 @@
+
+Execute in the project's host
+
+  sh build_docs.sh /tmp/src /tmp/out
+
+Execute from the docker image
+
 1. Build the image
 
 2. Run a disposable container of the image, mapping the path '/adocsrc' with the asciidoctor sources and '/adocout' with the output path in the host.

@@ -19,7 +19,7 @@ public class ExtendedLoggerHandler implements LogHandler {
     
     @Override
     public void log(LogRecord logRecord) {
-        System.out.println(">>>>>>>>>>>>>>!!!!!!#### "+logRecord.getMessage()+","+logRecord.getSeverity());
+        System.out.println("CORE>>>>>>>>>>>>>!!!!!!#### "+logRecord.getMessage()+","+logRecord.getSeverity());
     }
 
 }
