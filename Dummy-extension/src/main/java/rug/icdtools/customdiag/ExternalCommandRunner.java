@@ -54,7 +54,7 @@ public class ExternalCommandRunner {
      * @throws ExternalCommandExecutionException 
      */
     public static void runCommand(String... command) throws ExternalCommandExecutionException {
-        try{
+        try{                        
             ProcessBuilder builder = new ProcessBuilder();
             builder.command(command);                  
             Process process = builder.start();

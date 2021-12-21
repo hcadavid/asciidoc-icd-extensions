@@ -22,71 +22,55 @@ import rug.icdtools.logging.Logger;
 
 /**
  *
- * @author hcadavid
- * base: https://github.com/sclassen/sessions/blob/1c64202b3f5cdea5fcfd46bf2cefeffad22cca9c/javaland2017/asciidoctor-extensions/asciidoctor-demo/README.adoc
+ * @author hcadavid base:
+ * https://github.com/sclassen/sessions/blob/1c64202b3f5cdea5fcfd46bf2cefeffad22cca9c/javaland2017/asciidoctor-extensions/asciidoctor-demo/README.adoc
  * dummydiag::sampleparam[]
  */
 public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
 
-    private final static Path DIAGRAMS_FOLDER=Paths.get("images");
-    private final static String PACKETDIAG_BIN="/usr/local/bin/packetdiag";
-    
+    //asciidoctorj convention - do not change
+    private final static Path DIAGRAMS_FOLDER = Paths.get("images");
+
+    private final static String PACKETDIAG_BIN = "/usr/local/bin/packetdiag";
+
     @Override
     public Object process(StructuralNode parent, String target, Map<String, Object> map) {
-        try{
-            
-            Logger.log("E>>>>>>>RANDOM DIAGRAM MACRO PROCESSOR:"+System.getProperty("OUTPUT_PATH"));        
-            
+        try {
+
+            Logger.log("E>>>>>>>RANDOM DIAGRAM MACRO PROCESSOR:" + target);
+
             //target is expectd to be relative to ASCIIDOC document's source
-            Path inputPath =Paths.get(System.getProperty("ASCIIDOC_SOURCE_PATH"));                        
-            Path outputPath=Paths.get(System.getProperty("OUTPUT_PATH"));
-            
+            Path inputPath = Paths.get(System.getProperty("ASCIIDOC_SOURCE_PATH"));
+            Path outputPath = Paths.get(System.getProperty("OUTPUT_PATH"));
+
             //resolve path of the diagram's source code (asciidoc source / target)
-            Path diagramSourcePath = inputPath.resolve(target);                               
-            
+            Path diagramSourcePath = inputPath.resolve(target);
+
             //TODO to be defined: replicate hierarchy of the source? 
-            String outputFileName = inputPath.getFileName()+".png";
-            
+            String outputFileName = diagramSourcePath.getFileName() + ".png";
+
             //create output folder if it doesnt exist
             Files.createDirectories(outputPath.resolve(DIAGRAMS_FOLDER));
-            
+
             //output's absolute path
-            Path genDiagramPath = outputPath.resolve(DIAGRAMS_FOLDER).resolve(outputFileName);
+            Path outputAbsolutePath = outputPath.resolve(DIAGRAMS_FOLDER).resolve(outputFileName);
 
-            Path relativePath = DIAGRAMS_FOLDER.resolve(outputFileName);
-            
-            ExternalCommandRunner.runCommand(PACKETDIAG_BIN,"-o", genDiagramPath.toFile().getAbsolutePath(), diagramSourcePath.toFile().getAbsolutePath());
-            
-            //get filename from source
-            //runCoExtermmand("/usr/local/bin/packetdiag","/tmp/src/diags/tscp2.diag");
-            Map<String,Object> attributes = new HashMap<>();
-            attributes.put("target", "images/.png");
+            Path outputRelativePath = DIAGRAMS_FOLDER.resolve(outputFileName);
 
-            //relative reference to generated image on the document
-            return this.createBlock(parent, "image", relativePath.toString(), attributes);
-            
-        } catch (IOException e){
-            return null;
+            ExternalCommandRunner.runCommand(PACKETDIAG_BIN, "-o", outputAbsolutePath.toFile().getAbsolutePath(), diagramSourcePath.toFile().getAbsolutePath());
+
+            Map<String, Object> attributes = new HashMap<>();
+
+            attributes.put("target", outputRelativePath.getFileName().toString());
+
+            return this.createBlock(parent, "image", "", attributes);
+
+        } catch (IOException e) {
+            return new RuntimeException(e);
         } catch (ExternalCommandExecutionException ex) {
             return new RuntimeException(ex);
         }
-        
-       
-        //packetdiag tcp2.diag
-        
-        //createBlock(parent, "image", "", [
-        //        target: imagePath
-        //], [:])
-    }
 
-    private static Process executeCommands(String... commands) throws IOException{
-        Process process = null;
-        ProcessBuilder pb = new ProcessBuilder(commands);
-        pb.directory(new File("path_to_working_directory")); //Set current directory
-        pb.redirectError(new File("path_to_log_file")); //Log errors in specified log file.        
-        process = pb.start();      
-        return process;
     }
-
 
 }
