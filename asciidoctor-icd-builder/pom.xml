@@ -9,7 +9,17 @@
     <name>Asciidoctor-icd-builder</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <asciidoctor.maven.plugin.version>2.2.1</asciidoctor.maven.plugin.version>
+        <asciidoctorj.pdf.version>1.6.0</asciidoctorj.pdf.version>
+        <asciidoctorj.version>2.5.2</asciidoctorj.version>
+        <jruby.version>9.2.17.0</jruby.version>-->
+        <asciidoctorj.pdf.version>1.6.0</asciidoctorj.pdf.version>
     </properties>
+    
+    
     <build>
         <defaultGoal>process-resources</defaultGoal>
         <plugins>
@@ -17,9 +27,14 @@
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
                 <version>2.2.1</version>
-                
-                
+                                
                 <dependencies>
+                    
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-pdf</artifactId>
+                        <version>${asciidoctorj.pdf.version}</version>
+                    </dependency>
                     
                     <!--logging for extensions -->
                     <dependency>                        
@@ -82,7 +97,7 @@
                             <!--<outputDirectory>${basedir}/html</outputDirectory>-->
                             <sourceDirectory>${ASCIIDOC_SOURCE_PATH}</sourceDirectory>
                             <outputDirectory>${OUTPUT_PATH}</outputDirectory>
-                            <backend>html5</backend>
+                            <backend>pdf</backend>
                             <attributes> 
                                 <imagesdir>./images</imagesdir>
                                 <toc>left</toc>
