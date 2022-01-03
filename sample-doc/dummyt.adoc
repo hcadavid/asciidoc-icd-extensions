@@ -18,6 +18,11 @@ This is a user manual for an empty project.
 == First level heading
 
 
+Using dummy diagram extension
+
+dummydiag::pdiag.pd[]
+
+
 
 This is a paragraph with a *bold* word and an _italicized_ word.
 

@@ -31,7 +31,9 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
     //asciidoctorj convention - do not change
     private final static Path DIAGRAMS_FOLDER = Paths.get("images");
 
-    private final static String PACKETDIAG_BIN = "/usr/local/bin/packetdiag";
+    //private final static String PACKETDIAG_BIN = "/usr/local/bin/packetdiag";
+    private final static String PACKETDIAG_BIN = "/home/hcadavid/.local/bin/packetdiag";    
+
 
     @Override
     public Object process(StructuralNode parent, String target, Map<String, Object> map) {
