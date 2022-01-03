@@ -97,7 +97,8 @@
                             <!--<outputDirectory>${basedir}/html</outputDirectory>-->
                             <sourceDirectory>${ASCIIDOC_SOURCE_PATH}</sourceDirectory>
                             <outputDirectory>${OUTPUT_PATH}</outputDirectory>
-                            <backend>html</backend>
+                            <!--<backend>html</backend>-->
+                            <backend>pdf</backend>
                             <attributes> 
                                 <imagesdir>./images</imagesdir>
                                 <toc>left</toc>

@@ -12,7 +12,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.asciidoctor.ast.StructuralNode;
@@ -24,7 +26,8 @@ import rug.icdtools.logging.Logger;
  *
  * @author hcadavid base:
  * https://github.com/sclassen/sessions/blob/1c64202b3f5cdea5fcfd46bf2cefeffad22cca9c/javaland2017/asciidoctor-extensions/asciidoctor-demo/README.adoc
- * dummydiag::sampleparam[]
+ * dummydiag::sampleparam[]private final static Path DIAGRAMS_FOLDER =
+ * Paths.get("images");
  */
 public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
 
@@ -32,8 +35,7 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
     private final static Path DIAGRAMS_FOLDER = Paths.get("images");
 
     //private final static String PACKETDIAG_BIN = "/usr/local/bin/packetdiag";
-    private final static String PACKETDIAG_BIN = "/home/hcadavid/.local/bin/packetdiag";    
-
+    private final static String PACKETDIAG_BIN = "/home/hcadavid/.local/bin/packetdiag";
 
     @Override
     public Object process(StructuralNode parent, String target, Map<String, Object> map) {
@@ -64,6 +66,16 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
             Map<String, Object> attributes = new HashMap<>();
 
             attributes.put("target", outputRelativePath.getFileName().toString());
+
+            List<String> lines = Arrays.asList(
+                    "[width=\"15%\"]",
+                    "|=======",
+                    "|1 |2 |A",
+                    "|3 |4 |B",
+                    "|5 |6 |C",
+                    "|=======");
+
+            parseContent(parent, lines);
 
             return this.createBlock(parent, "image", "", attributes);
 
