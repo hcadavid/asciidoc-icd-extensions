@@ -23,6 +23,10 @@ Using dummy diagram extension
 dummydiag::pdiag.pd[]
 
 
+This is an included partial file-----
+
+include::table1.adoc[]
+
 
 This is a paragraph with a *bold* word and an _italicized_ word.
 
