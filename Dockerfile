@@ -1,9 +1,12 @@
-FROM atlassian/maven:3.5-jdk-8-alpine as build
+FROM openjdk:18-ea-11-jdk-alpine3.15 as build
 USER root
 
+RUN addgroup -S appgroup && adduser -S user -G appgroup
+RUN apk add maven
+
 # NodeJS dependencies (to enable graphviz-based extensions)
-RUN apk add --update nodejs nodejs-npm
-RUN npm install -g bytefield-svg
+#RUN apk add --update nodejs nodejs-npm
+#RUN npm install -g bytefield-svg
 RUN apk add graphviz
 RUN apk add tree
 
