@@ -9,15 +9,19 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest    
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2       
+      with:
+        submodules: recursive
     - name: Docker login
       env:
         DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}     
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: update sysrdl2jinja submodule
+      run: git submodule update --remote
     - name: Build the Docker image        
       run: docker build . --file Dockerfile --tag hectorcadavid/asciidoctor-icd-ext:latest
     - name: Docker push
