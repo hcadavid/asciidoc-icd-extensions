@@ -1,6 +1,5 @@
 package rug.icdtools.dummy.extension;
 
-import com.sun.tools.sjavac.Log;
 import org.asciidoctor.ast.ContentNode;
 import org.asciidoctor.ast.PhraseNode;
 import org.asciidoctor.extension.InlineMacroProcessor;
