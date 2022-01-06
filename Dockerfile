@@ -3,6 +3,7 @@ USER root
 
 RUN addgroup -S appgroup && adduser -S user -G appgroup
 RUN apk add maven
+RUN apk add ttf-dejavu
 
 # NodeJS dependencies (to enable graphviz-based extensions)
 #RUN apk add --update nodejs nodejs-npm
