@@ -1,6 +1,8 @@
 
 Execute in the project's host
 
+  build sysrdl2ninja submodule
+
   sh build_docs.sh /tmp/src /tmp/out
 
 Execute from the docker image
