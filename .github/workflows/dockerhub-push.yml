@@ -12,10 +12,12 @@ jobs:
 
     runs-on: ubuntu-latest    
     steps:
-    - name: Checkout repository and submodules
+    - name: Checkout repository
       uses: actions/checkout@v2
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
       with:
-        submodules: recursive
+        remote: true
     - name: Docker login
       env:
         DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
