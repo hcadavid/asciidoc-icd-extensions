@@ -1,4 +1,5 @@
-FROM maven:3.8.4-jdk-8-slim as build
+#FROM maven:3.8.4-jdk-8-slim as build
+FROM maven:3.8.4-jdk-11 as build
 
 USER root
 
