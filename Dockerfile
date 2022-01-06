@@ -5,6 +5,7 @@ USER root
 RUN apk add --update nodejs nodejs-npm
 RUN npm install -g bytefield-svg
 RUN apk add graphviz
+RUN apk add tree
 
 # Python/PIP (to install nwdiag, sysrd2jinja)
 ENV PYTHONUNBUFFERED=1
