@@ -55,7 +55,7 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
 
             //create output folder if it doesnt exist
             Files.createDirectories(outputPath.resolve(DIAGRAMS_FOLDER));
-
+            
             //output's absolute path
             Path outputAbsolutePath = outputPath.resolve(DIAGRAMS_FOLDER).resolve(outputFileName);
 
@@ -80,10 +80,16 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
             return this.createBlock(parent, "image", "", attributes);
 
         } catch (IOException e) {
-            return new RuntimeException(e);
-        } catch (ExternalCommandExecutionException ex) {
-            return new RuntimeException(ex);
+            //e.printStackTrace();            
+            Logger.log("ERROR >>>>"+e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        } catch (ExternalCommandExecutionException ex) {            
+            Logger.log("ERROR >>>>"+ex.getLocalizedMessage());
+            throw new RuntimeException(ex);
+        } finally {
+            return null;
         }
+            
 
     }
 
