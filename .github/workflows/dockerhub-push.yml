@@ -18,6 +18,8 @@ jobs:
         DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}     
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: update sysrdl2jinja submodule
+      run: git submodule update --init
     - name: Build the Docker image        
       run: docker build . --file Dockerfile --tag hectorcadavid/asciidoctor-icd-ext:latest
     - name: Docker push
