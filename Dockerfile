@@ -1,25 +1,19 @@
-FROM openjdk:18-ea-11-jdk-alpine3.15 as build
+FROM maven:3.8.4-jdk-8-slim as build
+
 USER root
 
-RUN addgroup -S appgroup && adduser -S user -G appgroup
-RUN apk add maven
-RUN apk add ttf-dejavu
+RUN useradd -rm -d /home/user -s /bin/bash -g root -G sudo -u 1001 user
 
+#RUN apk add ttf-dejavu
 # NodeJS dependencies (to enable graphviz-based extensions)
 #RUN apk add --update nodejs nodejs-npm
 #RUN npm install -g bytefield-svg
-RUN apk add graphviz
-RUN apk add tree
 
-# Python/PIP (to install nwdiag, sysrd2jinja)
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+RUN apt-get update -y && apt-get install python3-pip -y
+RUN apt install python-is-python3
+RUN apt-get install graphviz -y
+RUN pip3 install nwdiag
 
-#RUN pip3 install nwdiag
-
-# Source / Output folders 
 RUN mkdir /adocsrc
 RUN mkdir /adocout
 COPY ./ /asciidocext/
