@@ -1,20 +1,25 @@
-FROM maven:3.8.4-jdk-8-slim as build
-#FROM maven:3.8.4-jdk-11 as build
-
+FROM maven:3.6.1-jdk-8-alpine as build
 USER root
 
-RUN useradd -rm -d /home/user -s /bin/bash -g root -G sudo -u 1001 user
+RUN addgroup -S appgroup && adduser -S user -G appgroup
+#RUN apk add maven
+RUN apk add ttf-dejavu
 
-#RUN apk add ttf-dejavu
 # NodeJS dependencies (to enable graphviz-based extensions)
 #RUN apk add --update nodejs nodejs-npm
 #RUN npm install -g bytefield-svg
+RUN apk add graphviz
+RUN apk add tree
 
-RUN apt-get update -y && apt-get install python3-pip -y
-RUN apt install python-is-python3
-RUN apt-get install graphviz -y
-RUN pip3 install nwdiag
+# Python/PIP (to install nwdiag, sysrd2jinja)
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools
 
+#RUN pip3 install nwdiag
+
+# Source / Output folders 
 RUN mkdir /adocsrc
 RUN mkdir /adocout
 COPY ./ /asciidocext/
@@ -32,5 +37,3 @@ RUN chown -R user /adocout
 USER user
 RUN mvn compile
 RUN chmod +x build_docs.sh
-
-#ENTRYPOINT ["./build_docs.sh", "/adocsrc","/adocout"]
