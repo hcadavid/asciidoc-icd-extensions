@@ -14,6 +14,7 @@
         <module>asciidoctorj-twitter-extension</module>
         <module>asciidoctor-icd-builder</module>
         <module>Dummy-extension</module>
+        <module>systemrdl-asciidoctor-extensions</module>
     </modules>
 
     <build>
