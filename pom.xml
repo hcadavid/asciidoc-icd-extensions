@@ -3,14 +3,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.asciidoctor.maven</groupId>
-    <artifactId>dac-icd-builder-extensions</artifactId>
+    <artifactId>dac-icd-builder-modules</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>DaC-asciidoctor-builder-extensions</name>
     <description>Maven aggregator project with the ICD builder and its asciidoctor extensions.</description>
     <packaging>pom</packaging>
 
     <modules>
-        <module>asciidoctorj-extensions-logger</module>
+        <module>asciidoctorj-extension-tools</module>
         <module>asciidoctorj-twitter-extension</module>
         <module>asciidoctor-icd-builder</module>
         <module>Dummy-extension</module>
