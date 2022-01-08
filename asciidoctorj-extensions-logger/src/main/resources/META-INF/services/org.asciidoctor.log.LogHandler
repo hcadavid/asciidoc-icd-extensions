@@ -1,2 +1,2 @@
 # File: src/main/resources/META-INF/services/org.asciidoctor.log.LogHandler
-rug.icdtools.logging.ExtendedLoggerHandler
+rug.icdtools.logging.AsciidoctorJLoggerHandler

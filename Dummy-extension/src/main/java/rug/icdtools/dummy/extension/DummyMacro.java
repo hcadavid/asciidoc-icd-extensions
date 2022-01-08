@@ -7,6 +7,7 @@ import org.asciidoctor.extension.InlineMacroProcessor;
 import java.util.HashMap;
 import java.util.Map;
 import org.asciidoctor.log.Severity;
+import rug.icdtools.logging.AbstractLogger;
 import rug.icdtools.logging.Logger;
 
 
@@ -31,7 +32,7 @@ public class DummyMacro extends InlineMacroProcessor {
         //if (true) throw new RuntimeException("&&&&& cause");
         
         if (macroValue == null || macroValue.isEmpty() || macroValue.equals("dummy")) {
-            Logger.log("TEST OF A CUSTOM LOGGER WITHIN DUMMY MACRO");
+            Logger.getInstance().log("TEST OF A CUSTOM LOGGER WITHIN DUMMY MACRO");
             
             org.asciidoctor.log.LogRecord log=new org.asciidoctor.log.LogRecord(Severity.INFO, "TEST OF ASCIID LOGGER WITHIN DUMMY MACRO");
             LOGGER.log(asciidocLogToJavalog(log));

@@ -5,8 +5,6 @@
  */
 package rug.icdtools.logging;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.asciidoctor.log.LogHandler;
 import org.asciidoctor.log.LogRecord;
 
@@ -14,12 +12,12 @@ import org.asciidoctor.log.LogRecord;
  *
  * @author hcadavid
  */
-public class ExtendedLoggerHandler implements LogHandler {
+public class AsciidoctorJLoggerHandler implements LogHandler {
 
     
     @Override
     public void log(LogRecord logRecord) {
-        System.out.println("CORE>>>>>>>>>>>>>!!!!!!#### "+logRecord.getMessage()+","+logRecord.getSeverity());
+        Logger.getInstance().log("CORE>>>>>>>>>>>>>!!!!!!#### "+logRecord.getMessage()+","+logRecord.getSeverity());        
     }
 
 }
