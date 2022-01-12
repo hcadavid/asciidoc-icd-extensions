@@ -11,11 +11,13 @@ RUN apk add ttf-dejavu
 RUN apk add graphviz
 RUN apk add tree
 
+
 # Python/PIP (to install nwdiag, sysrd2jinja)
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
 RUN pip3 install --no-cache --upgrade pip setuptools
+
 
 #RUN pip3 install nwdiag
 
@@ -26,7 +28,7 @@ COPY ./ /asciidocext/
 WORKDIR /asciidocext
 
 # Install sysrdl2jinja
-RUN sh sysrdl2jinja/install.sh
+#RUN sh sysrdl2jinja/install.sh
 
 # Switch folder owners from root to user 
 RUN chown -R user /asciidocext
