@@ -14,7 +14,12 @@ import java.io.InputStreamReader;
  * @author hcadavid
  */
 public class ExternalCommandRunner {
+
+    private ExternalCommandRunner() {
+    }
    
+    
+    
     private static class InputStreamStringBufferReader implements Runnable {
 
         private BufferedReader input;

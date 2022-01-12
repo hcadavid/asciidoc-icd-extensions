@@ -75,7 +75,7 @@ public class ExternalCommandRunner {
             throw new ExternalCommandExecutionException("Command ["+String.join(",",command)+"] failed due to an I/O error:"+e.getMessage(),e);
         } catch (InterruptedException ex) {
             throw new ExternalCommandExecutionException("Command ["+String.join(",",command)+"] failed due to an unexpected thread-related error:"+ex);            
-        }
+        } 
                 
     }
     

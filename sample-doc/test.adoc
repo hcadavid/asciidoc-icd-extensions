@@ -13,7 +13,19 @@ This is a user manual for an empty project.
 
 == First level heading
 
+[systemrdl]
+-----
+this is a multiline exampe Example
 
+another line
+
+asdsadsa
+asdsadsa
+-----
+
+
+systemrdl::rover.rdl[]
+dummy::dummy[]
 
 This is a paragraph with a *bold* word and an _italicized_ word.
 
