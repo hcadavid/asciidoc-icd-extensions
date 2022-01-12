@@ -4,14 +4,18 @@
  */
 package rug.icdtools.systemrdl.asciidoctor.extensions;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockMacroProcessor;
@@ -46,18 +50,29 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
             //output's absolute path
             Path outputAbsolutePath = outputPath.resolve(outputFileName);
 
-            //TODO externalize command
-            ExternalCommandRunner.runCommand("sysrdl2jinja", rdlSourcePath.toFile().getAbsolutePath(), outputAbsolutePath.toFile().getAbsolutePath());
+            Logger.getInstance().log("$$$%%%>>>" + new File(".").getAbsolutePath());
 
-            //include::table1.adoc[]
-            List<String> newOutputAsciidocLines = Arrays.asList("include::" + outputFileName + "[]");
+            //TODO externalize command/replace with an API call when it is available
+            ExternalCommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_adoc.sh", rdlSourcePath.toFile().getAbsolutePath(), outputAbsolutePath.toFile().getAbsolutePath());
+
+            Scanner s = new Scanner(new File(outputAbsolutePath.toFile().getAbsolutePath()));
+
+            List<String> newOutputAsciidocLines = new LinkedList<>();
+            while (s.hasNext()) {
+                newOutputAsciidocLines.add(s.next());
+            }
+            s.close();
 
             parseContent(parent, newOutputAsciidocLines);
 
             return null;
 
         } catch (ExternalCommandExecutionException ex) {
-            Logger.getInstance().log("ERROR >>>>"+ex.getLocalizedMessage());
+            Logger.getInstance().log("ERROR >>>>" + ex.getLocalizedMessage());
+            throw new RuntimeException(ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getInstance().log("ERROR >>>>" + ex.getLocalizedMessage());
+            java.util.logging.Logger.getLogger(SystemRDLBlockMacroProcessor.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
 
