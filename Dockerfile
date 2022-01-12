@@ -1,25 +1,34 @@
-FROM node:fermium-alpine AS node
+#FROM node:fermium-alpine AS node
 FROM maven:3.6.1-jdk-8-alpine
-
 
 USER root
 
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/share /usr/local/share
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/bin /usr/local/bin
+# Node.js-based required dependencies 
+#RUN apk add npm
+#COPY --from=node /usr/lib /usr/lib
+#COPY --from=node /usr/local/share /usr/local/share
+#COPY --from=node /usr/local/lib /usr/local/lib
+#COPY --from=node /usr/local/include /usr/local/include
+#COPY --from=node /usr/local/bin /usr/local/bin
 
-RUN addgroup -S appgroup && adduser -S user -G appgroup
-#RUN apk add maven
-RUN apk add ttf-dejavu
-
-# NodeJS dependencies (to enable graphviz-based extensions)
 #RUN apk add --update nodejs nodejs-npm
-RUN npm install -g netlify-cli --unsafe-perm=true
+
+#ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
+#RUN echo "${ALPINE_MIRROR}/v3.12/main/" >> /etc/apk/repositories
+#RUN apk add nodejs --repository="http://dl-cdn.alpinelinux.org/alpine/v3.12/main/"
+#RUN node --version
+#RUN npm install -g netlify-cli --unsafe-perm=true
 #RUN npm install -g bytefield-svg
+
+
+
+RUN apk add ttf-dejavu
 RUN apk add graphviz
 RUN apk add tree
+
+
+RUN addgroup -S appgroup && adduser -S user -G appgroup
+
 
 
 # Python/PIP (to install nwdiag, sysrd2jinja)
@@ -34,6 +43,7 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 # Source / Output folders 
 RUN mkdir /adocsrc
 RUN mkdir /adocout
+RUN mkdir /public
 COPY ./ /asciidocext/
 WORKDIR /asciidocext
 
@@ -42,6 +52,7 @@ WORKDIR /asciidocext
 RUN chown -R user /asciidocext
 RUN chown -R user /adocsrc
 RUN chown -R user /adocout
+RUN chown -R user /public
 
 # Build asciidoctor extensions
 USER user
