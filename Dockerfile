@@ -1,5 +1,14 @@
-FROM maven:3.6.1-jdk-8-alpine as build
+FROM node:fermium-alpine AS node
+FROM maven:3.6.1-jdk-8-alpine
+
+
 USER root
+
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/share /usr/local/share
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
 
 RUN addgroup -S appgroup && adduser -S user -G appgroup
 #RUN apk add maven
@@ -7,6 +16,7 @@ RUN apk add ttf-dejavu
 
 # NodeJS dependencies (to enable graphviz-based extensions)
 #RUN apk add --update nodejs nodejs-npm
+RUN npm install -g netlify-cli --unsafe-perm=true
 #RUN npm install -g bytefield-svg
 RUN apk add graphviz
 RUN apk add tree
