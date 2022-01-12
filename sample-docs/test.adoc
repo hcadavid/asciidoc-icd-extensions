@@ -15,12 +15,20 @@ This is a user manual for an empty project.
 
 [systemrdl]
 -----
-this is a multiline exampe Example
+addrmap tiny {
+    reg {
+        field {
+ 	    name="reg_aa";
+            sw=rw;
+            hw=r;
+        } f1[8] = 123;
 
-another line
-
-asdsadsa
-asdsadsa
+        field {
+            sw=r;
+            hw=w;
+        } f2[16];
+    }r1;
+};
 -----
 
 

@@ -27,8 +27,6 @@ RUN mkdir /adocout
 COPY ./ /asciidocext/
 WORKDIR /asciidocext
 
-# Install sysrdl2jinja
-#RUN sh sysrdl2jinja/install.sh
 
 # Switch folder owners from root to user 
 RUN chown -R user /asciidocext
@@ -39,3 +37,7 @@ RUN chown -R user /adocout
 USER user
 RUN mvn compile
 RUN chmod +x build_docs.sh
+
+# Install sysrdl2jinja dependencies
+#RUN sh sysrdl2jinja/install.sh
+RUN pip install -r sysrdl2jinja/requirements.txt
