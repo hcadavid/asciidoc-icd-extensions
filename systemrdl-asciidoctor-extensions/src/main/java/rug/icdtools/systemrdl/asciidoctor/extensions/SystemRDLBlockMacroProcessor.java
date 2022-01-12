@@ -39,32 +39,15 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
 
             //target is expectd to be relative to ASCIIDOC document's source
             Path inputPath = Paths.get(System.getProperty("ASCIIDOC_SOURCE_PATH"));
-            Path outputPath = Paths.get(System.getProperty("OUTPUT_PATH"));
-
+                      
             //resolve path of the RDL file source code (asciidoc source / target)
             Path rdlSourcePath = inputPath.resolve(target);
 
-            //TODO to be defined: replicate hierarchy of the source? 
-            String outputFileName = rdlSourcePath.getFileName() + ".adoc";
-
-            //output's absolute path
-            Path outputAbsolutePath = outputPath.resolve(outputFileName);
-
+            
             Logger.getInstance().log("$$$%%%>>>" + new File(".").getAbsolutePath());
 
-            //TODO externalize command/replace with an API call when it is available
-            ExternalCommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_adoc.sh", rdlSourcePath.toFile().getAbsolutePath(), outputAbsolutePath.toFile().getAbsolutePath());
-
-            Scanner s = new Scanner(new File(outputAbsolutePath.toFile().getAbsolutePath()));
-
-            List<String> newOutputAsciidocLines = new LinkedList<>();
-            while (s.hasNext()) {
-                newOutputAsciidocLines.add(s.next());
-            }
-            s.close();
-
-            parseContent(parent, newOutputAsciidocLines);
-
+            SystemRDL2AsciidocConverter.convertAndAddToOutput(rdlSourcePath.toFile(), parent, this);
+            
             return null;
 
         } catch (ExternalCommandExecutionException ex) {
@@ -74,6 +57,10 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
             Logger.getInstance().log("ERROR >>>>" + ex.getLocalizedMessage());
             java.util.logging.Logger.getLogger(SystemRDLBlockMacroProcessor.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            Logger.getInstance().log("ERROR >>>>" + ex.getLocalizedMessage());
+            throw new RuntimeException(ex);
+            
         }
 
     }
