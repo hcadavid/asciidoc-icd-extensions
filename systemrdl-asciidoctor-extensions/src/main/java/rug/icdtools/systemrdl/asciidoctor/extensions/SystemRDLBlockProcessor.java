@@ -4,13 +4,20 @@
  */
 package rug.icdtools.systemrdl.asciidoctor.extensions;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;
+import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
 import rug.icdtools.logging.Logger;
 
 /**
@@ -19,32 +26,43 @@ import rug.icdtools.logging.Logger;
  */
 public class SystemRDLBlockProcessor extends BlockProcessor {
 
-    
     @SuppressWarnings("serial")
-    private static Map<String, Object> configs = new HashMap<String, Object>() {{
-        put("contexts", Arrays.asList(":listing"));
-        put("content_model", ":compound");
-    }};
+    private static Map<String, Object> configs = new HashMap<String, Object>() {
+        {
+            put("contexts", Arrays.asList(":listing"));
+            put("content_model", ":compound");
+        }
+    };
 
     public SystemRDLBlockProcessor(String name, Map<String, Object> config) {
         super(name, configs);
     }
-    
+
     @Override
     public Object process(StructuralNode parent, Reader reader, Map<String, Object> attributes) {
-        List<String> lines = reader.readLines();
-        String upperLines = null;
-        for (String line : lines) {
-            if (upperLines == null) {                
-                upperLines = line.toUpperCase();
-            } else {
-                upperLines = upperLines + "\n" + line.toUpperCase();                
-            }
-            
-        }
-        Logger.getInstance().log("$$$$$ - Block processor with:"+upperLines);
 
-        return createBlock(parent, "paragraph", Arrays.asList(upperLines), attributes, new HashMap<>());
+        try {
+            //create temporal file with the SystemRDL with the inline SystemRDL specification
+            File tmpInput = File.createTempFile("sysrdl2asciidoc", ".rdlsource", null);
+
+            try (FileWriter fileWriter = new FileWriter(tmpInput)) {
+                List<String> lines = reader.readLines();
+                
+                for (String line : lines) {
+                    fileWriter.write(line);
+                }
+            }
+
+            SystemRDL2AsciidocConverter.convertAndAddToOutput(tmpInput, parent, this);
+
+            Logger.getInstance().log("$$$$$ - Block processor");
+
+            return null;
+        } catch (IOException | ExternalCommandExecutionException ex) {
+            Logger.getInstance().log("ERROR >>>>" + ex.getLocalizedMessage());
+            throw new RuntimeException(ex);
+        }
+
     }
-    
+
 }
