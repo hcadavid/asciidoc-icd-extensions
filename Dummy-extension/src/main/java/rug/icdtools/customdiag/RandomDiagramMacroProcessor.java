@@ -74,11 +74,14 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
                     "|1 |2 |A",
                     "|3 |4 |B",
                     "|5 |6 |C",
-                    "|=======");
+                    "|=======",
+                    "https://asciidoctor.org[]"
+                    );
 
             parseContent(parent, lines);
+           
 
-            return this.createBlock(parent, "image", "", attributes);
+            return this.createBlock(parent, "pass", "<a href=\"rover.rdl\">rover.rdl</a>");
 
         } catch (IOException e) {
             //e.printStackTrace();  

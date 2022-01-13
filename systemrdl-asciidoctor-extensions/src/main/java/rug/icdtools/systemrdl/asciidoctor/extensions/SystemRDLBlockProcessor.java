@@ -5,15 +5,12 @@
 package rug.icdtools.systemrdl.asciidoctor.extensions;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;
@@ -53,7 +50,10 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
                 }
             }
 
-            SystemRDL2AsciidocConverter.convertAndAddToOutput(tmpInput, parent, this);
+            //TODO get name for attributes
+            //String regmapName=attributes.get("registrymapname");
+            
+            SystemRDL2AsciidocConverter.convertAndAddToOutput("tmpfile",tmpInput, parent, this);
 
             Logger.getInstance().log("$$$$$ - Block processor");
 

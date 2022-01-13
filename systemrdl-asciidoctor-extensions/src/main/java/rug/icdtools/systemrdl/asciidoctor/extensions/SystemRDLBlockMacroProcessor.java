@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
+import org.apache.commons.io.FilenameUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockMacroProcessor;
 import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
@@ -46,7 +47,7 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
             
             Logger.getInstance().log("$$$%%%>>>" + new File(".").getAbsolutePath());
 
-            SystemRDL2AsciidocConverter.convertAndAddToOutput(rdlSourcePath.toFile(), parent, this);
+            SystemRDL2AsciidocConverter.convertAndAddToOutput(FilenameUtils.removeExtension(target),rdlSourcePath.toFile(), parent, this);
             
             return null;
 

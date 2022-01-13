@@ -5,20 +5,6 @@ Firstname Lastname <author@asciidoctor.org>
 :icons: font
 :url-quickref: https://docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/
 
-Content entered directly below the header but before the first section heading is called the preamble.
-
-Using a dummy extension dummy:dummy[]
-
-XXXXX 
-
-YYYY  twitter:mrhaki[] about it.
-
-This is a user manual for an empty project.
-
-== First level heading
-
-
-Using dummy diagram extension
 
 dummydiag::pdiag.pd[]
 
