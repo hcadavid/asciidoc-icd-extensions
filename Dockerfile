@@ -1,25 +1,25 @@
-#FROM node:fermium-alpine AS node
+FROM node:fermium-alpine AS node
 FROM maven:3.6.1-jdk-8-alpine
 
 USER root
 
 # Node.js-based required dependencies 
-#RUN apk add npm
-#COPY --from=node /usr/lib /usr/lib
-#COPY --from=node /usr/local/share /usr/local/share
-#COPY --from=node /usr/local/lib /usr/local/lib
-#COPY --from=node /usr/local/include /usr/local/include
-#COPY --from=node /usr/local/bin /usr/local/bin
+# Copying binaries from the official Node image (required by netlify-cli) 
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/share /usr/local/share
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
 
+# Regular dependencies installation approach (doesn't work for netlify-cli)
 #RUN apk add --update nodejs nodejs-npm
-
 #ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
 #RUN echo "${ALPINE_MIRROR}/v3.12/main/" >> /etc/apk/repositories
 #RUN apk add nodejs --repository="http://dl-cdn.alpinelinux.org/alpine/v3.12/main/"
 #RUN node --version
-#RUN npm install -g netlify-cli --unsafe-perm=true
 #RUN npm install -g bytefield-svg
 
+RUN npm install -g netlify-cli --unsafe-perm=true
 
 
 RUN apk add ttf-dejavu
@@ -46,7 +46,6 @@ RUN mkdir /adocout
 RUN mkdir /public
 COPY ./ /asciidocext/
 WORKDIR /asciidocext
-
 
 # Switch folder owners from root to user 
 RUN chown -R user /asciidocext
