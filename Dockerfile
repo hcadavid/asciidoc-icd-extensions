@@ -5,11 +5,11 @@ USER root
 
 # Node.js-based required dependencies 
 # Copying binaries from the official Node image (required by netlify-cli) 
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/share /usr/local/share
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/bin /usr/local/bin
+#COPY --from=node /usr/lib /usr/lib
+#COPY --from=node /usr/local/share /usr/local/share
+#COPY --from=node /usr/local/lib /usr/local/lib
+#COPY --from=node /usr/local/include /usr/local/include
+#COPY --from=node /usr/local/bin /usr/local/bin
 
 # Regular dependencies installation approach (doesn't work for netlify-cli)
 #RUN apk add --update nodejs nodejs-npm
@@ -19,7 +19,7 @@ COPY --from=node /usr/local/bin /usr/local/bin
 #RUN node --version
 #RUN npm install -g bytefield-svg
 
-RUN npm install -g netlify-cli --unsafe-perm=true
+#RUN npm install -g netlify-cli --unsafe-perm=true
 
 
 RUN apk add ttf-dejavu
