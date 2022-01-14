@@ -24,7 +24,7 @@ public class AcronymInlineMacroProcessor extends InlineMacroProcessor {
         // Define options for an 'anchor' element:
         Map<String, Object> options = new HashMap<>();
         options.put("type", ":link");
-        options.put("target", "www.google.com");
+        options.put("target", "#word7");
 
         // Create the 'anchor' node:
         PhraseNode inlineTwitterLink = createPhraseNode(contentNode, "anchor", term, attributes, options);

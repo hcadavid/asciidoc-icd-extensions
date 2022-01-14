@@ -18,8 +18,9 @@ public class GlossaryPlacementBlockProcessor extends BlockMacroProcessor{
     
     @Override
     public Object process(StructuralNode parent, String string, Map<String, Object> map) {
-        String output = String.format("<div id=\"%s\">divcontent</div>", GLOSSARY_PLACEMENT_ID);
+        String output = String.format("<table class=\"tableblock frame-all grid-all stretch\" id=\"%s\"></table>", GLOSSARY_PLACEMENT_ID);
         return createBlock(parent,"pass",output);
     }
     
 }
+

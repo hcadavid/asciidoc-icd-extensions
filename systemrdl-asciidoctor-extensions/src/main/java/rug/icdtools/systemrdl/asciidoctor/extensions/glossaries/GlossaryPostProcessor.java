@@ -8,6 +8,7 @@ import org.asciidoctor.ast.Document;
 import org.asciidoctor.extension.Postprocessor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import rug.icdtools.logging.Logger;
 
 /**
  *
@@ -15,70 +16,42 @@ import org.jsoup.nodes.Element;
  */
 public class GlossaryPostProcessor extends Postprocessor {
 
-    private static String tabledef = "<table class=\"tableblock frame-all grid-all stretch\"><colgroup> <col style=\"width: 20%;\"> <col style=\"width: 80%;\"></colgroup>";
-    private static String tableHeader = "<thead><tr><th class=\"tableblock halign-left valign-top\">%s</th><th class=\"tableblock halign-left valign-top\">%s</th></tr></thead> ";      
-    private static String tbodyopen = "<tbody>";       
-    private static String trow = "<tr> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td></tr>";
-    private static String tbodyclose = "</tbody>" ;
-    private static String tableclose = "</table>" ;
-    
-    
+    private static final String COL_GROUP = "<colgroup> <col style=\"width: 20%;\"> <col style=\"width: 80%;\"></colgroup>";
+    private static final String TABLE_HEADER = "<thead><tr><th class=\"tableblock halign-left valign-top\">%s</th><th class=\"tableblock halign-left valign-top\">%s</th></tr></thead> ";
+    private static final String TAB_BODY_OPEN = "<tbody>";
+    private static final String TAB_ROW = "<tr> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td></tr>";
+    private static final String TAB_BODY_CLOSE = "</tbody>";
+
+    private static final String WORD_ANCHOR="<a id=\"%s\">%s</a>";
     
     @Override
     public String process(Document dcmnt, String output) {
-       org.jsoup.nodes.Document doc = Jsoup.parse(output, "UTF-8"); 
-       
-       Element glossaryPlaceholder = doc.getElementById(GlossaryPlacementBlockProcessor.GLOSSARY_PLACEMENT_ID);  
-       
-       StringBuffer sb = new StringBuffer(tabledef);
-       sb.append(String.format(tableHeader,"Acronym","Description"));
-       sb.append(tbodyopen);
+        org.jsoup.nodes.Document doc = Jsoup.parse(output, "UTF-8");
 
-       for (int i=0;i<20;i++){
-           sb.append(String.format(trow, "word"+i,"meaning"+i));
-       }
-       
-       sb.append(tbodyclose);
-       sb.append(tableclose);
-       
-       if (glossaryPlaceholder!=null){
-           glossaryPlaceholder.text(sb.toString());
-       }
-       
-       return doc.html();
-       
+        Element glossaryPlaceholder = doc.getElementById(GlossaryPlacementBlockProcessor.GLOSSARY_PLACEMENT_ID);
+
+        //StringBuffer sb = new StringBuffer(tabledef);
+        StringBuilder sb = new StringBuilder();
+        sb.append(COL_GROUP);
+        sb.append(String.format(TABLE_HEADER, "Acronym", "Description"));
+        sb.append(TAB_BODY_OPEN);
+
+        for (int i = 0; i < 20; i++) {
+            String word = "word"+i;
+            String meaning = "aaa bbb ccc";
+            
+            sb.append(String.format(TAB_ROW, String.format(WORD_ANCHOR,word,word), "meaning" + i));
+        }
+
+        sb.append(TAB_BODY_CLOSE);
+        //sb.append(tableclose);
+
+        if (glossaryPlaceholder != null) {
+            glossaryPlaceholder.text(sb.toString());
+        }
+
+        return doc.html().replace("&lt;", "<").replace("&gt;", ">");
+
     }
-    
+
 }
-
-
-/*
-
-<table class="tableblock frame-all grid-all stretch"> 
-      <colgroup> 
-       <col style="width: 20%;"> 
-       <col style="width: 80%;"> 
-      </colgroup> 
-      <thead> 
-       <tr> 
-        <th class="tableblock halign-left valign-top">term</th> 
-        <th class="tableblock halign-left valign-top">tjss</th> 
-       </tr> 
-      </thead> 
-      <tbody> 
-       <tr> 
-        <td class="tableblock halign-left valign-top"><p class="tableblock">word</p></td> 
-        <td class="tableblock halign-left valign-top"><p class="tableblock">meaning1</p></td> 
-       </tr> 
-       <tr> 
-        <td class="tableblock halign-left valign-top"><p class="tableblock">word</p></td> 
-        <td class="tableblock halign-left valign-top"><p class="tableblock">meaning2</p></td> 
-       </tr> 
-       <tr> 
-        <td class="tableblock halign-left valign-top"><p class="tableblock">word</p></td> 
-        <td class="tableblock halign-left valign-top"><p class="tableblock">meaning3</p></td> 
-       </tr> 
-      </tbody> 
-     </table> 
-
-*/
