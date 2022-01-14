@@ -11,9 +11,38 @@ Writing an AsciiDoctor extension using Java is easy! Ask twitter:mrhaki[] about 
 
 This is a user manual for an empty project.
 
+
+acr:terma[]
+
+
+== Glossary
+
+[cols="20%,80%", options="header"]
+|=================
+| term | tjss
+| word | meaning1
+| word | meaning2
+| word | meaning3
+|=================
+
+
+glossary::something[]
+
+
+acr:termx[]
+
+
+acr:termy[]
+
+
+acr:termz[]
+
+acr:termw[]
+
+
 == First level heading
 
-[systemrdl]
+[systemrdl,regmapname=signal]
 -----
 addrmap tiny {
     reg {
@@ -30,6 +59,26 @@ addrmap tiny {
     }r1;
 };
 -----
+
+
+[systemrdl]
+-----
+addrmap tiny2 {
+    reg {
+        field {
+ 	    name="reg_aa";
+            sw=rw;
+            hw=r;
+        } f1[8] = 123;
+
+        field {
+            sw=r;
+            hw=w;
+        } f2[16];
+    }r1;
+};
+-----
+
 
 
 systemrdl::rover.rdl[]

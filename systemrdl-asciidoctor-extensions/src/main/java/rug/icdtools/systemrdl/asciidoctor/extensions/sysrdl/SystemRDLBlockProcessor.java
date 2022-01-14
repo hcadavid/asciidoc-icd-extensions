@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package rug.icdtools.systemrdl.asciidoctor.extensions;
+package rug.icdtools.systemrdl.asciidoctor.extensions.sysrdl;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.RandomStringUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;
@@ -49,13 +50,14 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
                     fileWriter.write(line);
                 }
             }
-
-            //TODO get name for attributes
-            //String regmapName=attributes.get("registrymapname");
+                       
+            String regMapName;
+            Object regMapNameAttValue=attributes.get("regmapname");
             
-            SystemRDL2AsciidocConverter.convertAndAddToOutput("tmpfile",tmpInput, parent, this);
+            regMapName = regMapNameAttValue!=null && regMapNameAttValue instanceof String?(String)regMapNameAttValue:RandomStringUtils.randomAlphabetic(12).toUpperCase();
+            SystemRDL2AsciidocConverter.convertAndAddToOutput(regMapName,tmpInput, parent, this);
 
-            Logger.getInstance().log("$$$$$ - Block processor");
+            Logger.getInstance().log("$$$$$ - Block processor - ");
 
             return null;
         } catch (IOException | ExternalCommandExecutionException ex) {

@@ -7,8 +7,11 @@ package rug.icdtools.systemrdl.asciidoctor.extensions.registry;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.extension.JavaExtensionRegistry;
 import org.asciidoctor.jruby.extension.spi.ExtensionRegistry;
-import rug.icdtools.systemrdl.asciidoctor.extensions.SystemRDLBlockMacroProcessor;
-import rug.icdtools.systemrdl.asciidoctor.extensions.SystemRDLBlockProcessor;
+import rug.icdtools.systemrdl.asciidoctor.extensions.sysrdl.SystemRDLBlockMacroProcessor;
+import rug.icdtools.systemrdl.asciidoctor.extensions.sysrdl.SystemRDLBlockProcessor;
+import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.AcronymInlineMacroProcessor;
+import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.GlossaryPlacementBlockProcessor;
+import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.GlossaryPostProcessor;
 
 /**
  *
@@ -20,7 +23,11 @@ public class SystemRDLExtensionRegistry implements ExtensionRegistry {
     public void register(Asciidoctor asciidoctor) {
         JavaExtensionRegistry javaExtensionRegistry = asciidoctor.javaExtensionRegistry();
         javaExtensionRegistry.blockMacro("systemrdl", SystemRDLBlockMacroProcessor.class);
-        javaExtensionRegistry.block("systemrdl", SystemRDLBlockProcessor.class);
+        javaExtensionRegistry.block("systemrdl", SystemRDLBlockProcessor.class);        
+        javaExtensionRegistry.inlineMacro("acr", AcronymInlineMacroProcessor.class);
+        javaExtensionRegistry.blockMacro("glossary", GlossaryPlacementBlockProcessor.class);
+        javaExtensionRegistry.postprocessor(GlossaryPostProcessor.class);
+        
     }
     
 }
