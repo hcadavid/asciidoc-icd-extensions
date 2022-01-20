@@ -5,7 +5,9 @@
 package rug.icdtools.systemrdl.asciidoctor.extensions.glossaries;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import org.asciidoctor.ast.ContentNode;
 import org.asciidoctor.ast.PhraseNode;
 import org.asciidoctor.extension.InlineMacroProcessor;
@@ -17,6 +19,12 @@ import rug.icdtools.logging.Logger;
  */
 public class AcronymInlineMacroProcessor extends InlineMacroProcessor {
 
+    private final static Set<String> acronymsInstancesSet = new LinkedHashSet<>();
+    
+    public static Set<String> acronymsInstances(){
+        return acronymsInstancesSet;
+    }
+    
    @Override
     public Object process(ContentNode contentNode, String term, Map<String, Object> attributes) {
 
@@ -24,13 +32,14 @@ public class AcronymInlineMacroProcessor extends InlineMacroProcessor {
         // Define options for an 'anchor' element:
         Map<String, Object> options = new HashMap<>();
         options.put("type", ":link");
-        options.put("target", "#word7");
+        options.put("target", "#"+term);
+        acronymsInstancesSet.add(term);
 
         // Create the 'anchor' node:
-        PhraseNode inlineTwitterLink = createPhraseNode(contentNode, "anchor", term, attributes, options);
+        PhraseNode glossaryAnchorLink = createPhraseNode(contentNode, "anchor", term, attributes, options);
 
         // Convert to String value:
-        return inlineTwitterLink.convert();
+        return glossaryAnchorLink.convert();
     }
 
 }

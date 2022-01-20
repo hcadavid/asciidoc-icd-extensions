@@ -4,11 +4,16 @@
  */
 package rug.icdtools.systemrdl.asciidoctor.extensions.glossaries;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.extension.Postprocessor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import rug.icdtools.logging.Logger;
+import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.sources.GlossaryDataSourceFactory;
 
 /**
  *
@@ -16,13 +21,13 @@ import rug.icdtools.logging.Logger;
  */
 public class GlossaryPostProcessor extends Postprocessor {
 
+    
     private static final String COL_GROUP = "<colgroup> <col style=\"width: 20%;\"> <col style=\"width: 80%;\"></colgroup>";
     private static final String TABLE_HEADER = "<thead><tr><th class=\"tableblock halign-left valign-top\">%s</th><th class=\"tableblock halign-left valign-top\">%s</th></tr></thead> ";
     private static final String TAB_BODY_OPEN = "<tbody>";
-    private static final String TAB_ROW = "<tr> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td></tr>";
+    private static final String TAB_ROW = "<tr id=\"%s\"> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td> <td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">%s</p></td></tr>";
     private static final String TAB_BODY_CLOSE = "</tbody>";
 
-    private static final String WORD_ANCHOR="<a id=\"%s\">%s</a>";
     
     @Override
     public String process(Document dcmnt, String output) {
@@ -30,21 +35,26 @@ public class GlossaryPostProcessor extends Postprocessor {
 
         Element glossaryPlaceholder = doc.getElementById(GlossaryPlacementBlockProcessor.GLOSSARY_PLACEMENT_ID);
 
-        //StringBuffer sb = new StringBuffer(tabledef);
         StringBuilder sb = new StringBuilder();
         sb.append(COL_GROUP);
         sb.append(String.format(TABLE_HEADER, "Acronym", "Description"));
         sb.append(TAB_BODY_OPEN);
 
-        for (int i = 0; i < 20; i++) {
-            String word = "word"+i;
-            String meaning = "aaa bbb ccc";
+        
+        Set<String> docInlineAcronyms = AcronymInlineMacroProcessor.acronymsInstances();
+        List<String> sortedAcronyms = new ArrayList<>(docInlineAcronyms);
+        Collections.sort(sortedAcronyms);
+        
+        for (String acronym:sortedAcronyms){
             
-            sb.append(String.format(TAB_ROW, String.format(WORD_ANCHOR,word,word), "meaning" + i));
+            String meaning = GlossaryDataSourceFactory.getDataSource().acronymMeaning(acronym);
+            
+            sb.append(String.format(TAB_ROW,acronym,acronym,meaning!=null?meaning:"Not defined in the centralized glossary."));            
+            
         }
 
+
         sb.append(TAB_BODY_CLOSE);
-        //sb.append(tableclose);
 
         if (glossaryPlaceholder != null) {
             glossaryPlaceholder.text(sb.toString());

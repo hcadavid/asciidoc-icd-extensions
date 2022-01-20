@@ -19,32 +19,20 @@ asdasdsad
 This is a user manual for an empty project.
 
 
-acr:terma[]
 
 
 == Glossary
 
-[cols="20%,80%", options="header"]
-|=================
-| term | tjss
-| word | meaning1
-| word | meaning2
-| word | meaning3
-|=================
+
+glossary::default with space[]
 
 
-glossary::something[]
+Here is a word that refers to acr:AIPS++[] and to acr:DDT[], a term related to the acr:LOFAR1[], and acr:Casacore[].
 
 
-acr:termx[]
+Finally, acr:LOFAR2.0__SW[]
 
 
-acr:termy[]
-
-
-acr:termz[]
-
-acr:termw[]
 
 
 == First level heading
