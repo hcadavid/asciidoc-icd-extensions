@@ -38,7 +38,7 @@ public class GlossaryDataSourceFactory {
         acronyms.put("KSP", "Key Science Program");
         acronyms.put("LOFAR", "The LOw Frequency ARray. LOFAR is a multipurpose sensor array; its main application is astronomy at low radio frequencies, but it also has geophysical and agricultural applications. [http://www.lofar.org/]");
         acronyms.put("LOFAR1", "LOFAR as it was built between 2009 and 2019");
-        acronyms.put("LOFAR2.0", "LOFAR after upgrading it; DUPLLO is part of the upgrade path");
+        acronyms.put("LOFAR2.0'", "LOFAR after upgrading it; DUPLLO is part of the upgrade path");
         acronyms.put("LOFAR2.0 DUPLLO", "LOFAR after upgrading according to the DUPLLO plan");
         acronyms.put("LOFAR2.0 SW", "LOFAR after upgrading according to the DUPLLO plan and after the Space Weather proposal extension");
         acronyms.put("LOFAR4SW", "LOFAR for Space Weather project");
