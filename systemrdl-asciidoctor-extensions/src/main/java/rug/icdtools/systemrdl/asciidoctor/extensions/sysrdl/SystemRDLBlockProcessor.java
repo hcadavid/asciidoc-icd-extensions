@@ -57,7 +57,7 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
             regMapName = regMapNameAttValue!=null && regMapNameAttValue instanceof String?(String)regMapNameAttValue:RandomStringUtils.randomAlphabetic(12).toUpperCase();
             SystemRDL2AsciidocConverter.convertAndAddToOutput(regMapName,tmpInput, parent, this);
 
-            Logger.getInstance().log("$$$$$ - Block processor - ");
+            Logger.getInstance().log("Executing inline SystemRDL Block Processor");
 
             return null;
         } catch (IOException | ExternalCommandExecutionException ex) {

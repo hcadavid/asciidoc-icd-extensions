@@ -14,7 +14,7 @@ public class StdoutLogger implements AbstractLogger{
 
     @Override
     public void log(String l) {
-              System.out.println("!!!EXT>>>>>>>>>>>>>>!!!!!!#### "+l);
+              System.out.println(l);
     }
     
     

@@ -17,7 +17,7 @@ public class AsciidoctorJLoggerHandler implements LogHandler {
     
     @Override
     public void log(LogRecord logRecord) {
-        Logger.getInstance().log("CORE>>>>>>>>>>>>>!!!!!!#### "+logRecord.getMessage()+","+logRecord.getSeverity());        
+        Logger.getInstance().log(logRecord.getMessage()+","+logRecord.getSeverity());        
     }
 
 }

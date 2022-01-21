@@ -34,7 +34,7 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
     @Override
     public Object process(StructuralNode parent, String target, Map<String, Object> map) {
 
-        Logger.getInstance().log("$$$$$ - BlockMacro processor with:" + target);
+        Logger.getInstance().log("BlockMacro processor with:" + target);
 
         try {
 
@@ -42,10 +42,7 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
             Path inputPath = Paths.get(System.getProperty("ASCIIDOC_SOURCE_PATH"));
                       
             //resolve path of the RDL file source code (asciidoc source / target)
-            Path rdlSourcePath = inputPath.resolve(target);
-
-            
-            Logger.getInstance().log("$$$%%%>>>" + new File(".").getAbsolutePath());
+            Path rdlSourcePath = inputPath.resolve(target);                       
 
             SystemRDL2AsciidocConverter.convertAndAddToOutput(FilenameUtils.removeExtension(target),rdlSourcePath.toFile(), parent, this);
             
