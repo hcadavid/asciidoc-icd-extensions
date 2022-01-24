@@ -12,7 +12,7 @@ import org.asciidoctor.ast.Document;
 import org.asciidoctor.extension.Postprocessor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import rug.icdtools.logging.Logger;
+import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
 import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.sources.GlossaryDataSourceFactory;
 
@@ -48,7 +48,7 @@ public class GlossaryPostProcessor extends Postprocessor {
         List<String> sortedAcronyms = new ArrayList<>(docInlineAcronyms);
         Collections.sort(sortedAcronyms);
         
-        Logger.getInstance().log("Generating glossary with "+sortedAcronyms.size()+" terms.", Severity.DEBUG);
+        DocProcessLogger.getInstance().log("Generating glossary with "+sortedAcronyms.size()+" terms.", Severity.DEBUG);
         
         for (String acronym:sortedAcronyms){
             

@@ -77,7 +77,6 @@ addrmap tiny2 {
 
 
 systemrdl::rover.rdl[]
-dummy::dummy[]
 
 This is a paragraph with a *bold* word and an _italicized_ word.
 

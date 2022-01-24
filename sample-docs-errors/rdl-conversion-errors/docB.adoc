@@ -59,7 +59,7 @@ addrmap tiny2 {
 
 Error: wrong file name
 
-systemrdl::rovssser.rdl[]
+systemrdl::rover.rdl[]
 
 This is a paragraph with a *bold* word and an _italicized_ word.
 

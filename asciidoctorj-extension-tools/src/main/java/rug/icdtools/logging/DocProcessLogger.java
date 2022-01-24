@@ -8,29 +8,20 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import rug.icdtools.logging.guiceconfig.LoggingDIModule;
+import rug.icdtools.logging.loggers.InMemoryErrorLogger;
 
 
 /**
  *
  * @author hcadavid
  */
-public class Logger {
+public class DocProcessLogger {
        
-    private static final Logger instance=new Logger();
+    private static AbstractLogger instance = new InMemoryErrorLogger();
+        
     
-    private AbstractLogger logger = null;
-    
-    private Logger(){
-        Injector injector = Guice.createInjector(new LoggingDIModule());
-        logger = injector.getInstance(AbstractLogger.class);
-    }
-    
-    public static Logger getInstance(){
+    public static AbstractLogger getInstance(){
         return instance;
-    }
-    
-    public void log(String log, Severity severity){
-        logger.log(log,severity);
     }
     
     

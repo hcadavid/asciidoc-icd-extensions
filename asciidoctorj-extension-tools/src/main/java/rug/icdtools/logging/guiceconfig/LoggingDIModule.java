@@ -5,7 +5,7 @@
 package rug.icdtools.logging.guiceconfig;
 
 import com.google.inject.AbstractModule;
-import rug.icdtools.logging.stdoutlogger.StdoutLogger;
+import rug.icdtools.logging.loggers.StdoutLogger;
 import rug.icdtools.logging.AbstractLogger;
 
 /**

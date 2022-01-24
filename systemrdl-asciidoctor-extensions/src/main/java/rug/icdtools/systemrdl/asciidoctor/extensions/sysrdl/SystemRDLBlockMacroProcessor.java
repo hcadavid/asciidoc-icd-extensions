@@ -13,7 +13,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockMacroProcessor;
 import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
-import rug.icdtools.logging.Logger;
+import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
 
 /**
@@ -26,7 +26,7 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
     @Override
     public Object process(StructuralNode parent, String target, Map<String, Object> map) {
 
-        Logger.getInstance().log("BlockMacro processor with:" + target, Severity.DEBUG);
+        DocProcessLogger.getInstance().log("BlockMacro processor with:" + target, Severity.DEBUG);
 
         try {
 
@@ -37,15 +37,15 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
             Path rdlSourcePath = inputPath.resolve(target);
 
             if (!rdlSourcePath.toFile().exists()) {
-                Logger.getInstance().log(String.format("SystemRDL file given as a target (%s) in systemrdl:: macro (line %s in file %s) was not found:",target,parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile()), Severity.ERROR);
+                DocProcessLogger.getInstance().log(String.format("SystemRDL file given as a target (%s) in systemrdl:: macro (line %s in file %s) was not found:",target,parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile()), Severity.ERROR);
             } else {
                 SystemRDL2AsciidocConverter.convertAndAddToOutput(FilenameUtils.removeExtension(target), rdlSourcePath.toFile(), parent, this);
             }
 
         } catch (ExternalCommandExecutionException ex) {
-            Logger.getInstance().log(String.format("Error while evaluating the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
+            DocProcessLogger.getInstance().log(String.format("Error while evaluating the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
         } catch (IOException ex) {             
-            Logger.getInstance().log(String.format("Internal error while executing the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
+            DocProcessLogger.getInstance().log(String.format("Internal error while executing the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
         }
         
         //add no further elements to the document

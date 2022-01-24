@@ -43,7 +43,7 @@ public class AsciidoctorJLoggerHandler implements LogHandler {
     
     @Override
     public void log(LogRecord logRecord) {        
-        Logger.getInstance().log("[From Asciidoctor core] "+logRecord.getMessage(),loggerLevelsMap.get(logRecord.getSeverity()));
+        DocProcessLogger.getInstance().log("[From Asciidoctor core] "+logRecord.getMessage(),loggerLevelsMap.get(logRecord.getSeverity()));
         
     }
     

@@ -17,7 +17,7 @@ import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;
 import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
-import rug.icdtools.logging.Logger;
+import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
 
 /**
@@ -59,14 +59,14 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
             regMapName = regMapNameAttValue!=null && regMapNameAttValue instanceof String?(String)regMapNameAttValue:RandomStringUtils.randomAlphabetic(12).toUpperCase();
             SystemRDL2AsciidocConverter.convertAndAddToOutput(regMapName,tmpInput, parent, this);
 
-            Logger.getInstance().log("Executing inline SystemRDL Block Processor",Severity.DEBUG);
+            DocProcessLogger.getInstance().log("Executing inline SystemRDL Block Processor",Severity.DEBUG);
 
             
             
         } catch (ExternalCommandExecutionException ex) {
-            Logger.getInstance().log(String.format("Error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
+            DocProcessLogger.getInstance().log(String.format("Error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
         } catch (IOException ex) {             
-            Logger.getInstance().log(String.format("Internal error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
+            DocProcessLogger.getInstance().log(String.format("Internal error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
         }
         
         //add no further elements to the document
