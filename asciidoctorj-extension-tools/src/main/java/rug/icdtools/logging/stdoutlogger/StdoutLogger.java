@@ -15,7 +15,7 @@ public class StdoutLogger implements AbstractLogger {
 
     @Override
     public void log(String log, Severity severity) {
-        System.out.println(String.format("[%s] - %s", severity, log));
+        System.out.println(String.format("*[%s] - %s", severity, log));
     }
 
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.commons.io.FilenameUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockMacroProcessor;
@@ -41,9 +42,11 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
                 SystemRDL2AsciidocConverter.convertAndAddToOutput(FilenameUtils.removeExtension(target), rdlSourcePath.toFile(), parent, this);
             }
 
-        } catch (ExternalCommandExecutionException | IOException ex) {
-            Logger.getInstance().log(ex.getLocalizedMessage(), Severity.ERROR);
-        } 
+        } catch (ExternalCommandExecutionException ex) {
+            Logger.getInstance().log(String.format("Error while evaluating the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
+        } catch (IOException ex) {             
+            Logger.getInstance().log(String.format("Internal error while executing the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
+        }
         
         //add no further elements to the document
         return null;

@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.commons.lang.RandomStringUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
@@ -62,9 +63,11 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
 
             
             
-        } catch (IOException | ExternalCommandExecutionException ex) {
-            Logger.getInstance().log(ex.getLocalizedMessage(),Severity.ERROR);          
-        } 
+        } catch (ExternalCommandExecutionException ex) {
+            Logger.getInstance().log(String.format("Error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
+        } catch (IOException ex) {             
+            Logger.getInstance().log(String.format("Internal error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
+        }
         
         //add no further elements to the document
         return null;

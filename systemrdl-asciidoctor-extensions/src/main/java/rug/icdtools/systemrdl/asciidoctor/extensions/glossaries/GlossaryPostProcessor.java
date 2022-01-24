@@ -13,6 +13,7 @@ import org.asciidoctor.extension.Postprocessor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import rug.icdtools.logging.Logger;
+import rug.icdtools.logging.Severity;
 import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.sources.GlossaryDataSourceFactory;
 
 /**
@@ -31,6 +32,8 @@ public class GlossaryPostProcessor extends Postprocessor {
     
     @Override
     public String process(Document dcmnt, String output) {
+               
+        
         org.jsoup.nodes.Document doc = Jsoup.parse(output, "UTF-8");
 
         Element glossaryPlaceholder = doc.getElementById(GlossaryPlacementBlockProcessor.GLOSSARY_PLACEMENT_ID);
@@ -44,6 +47,8 @@ public class GlossaryPostProcessor extends Postprocessor {
         Set<String> docInlineAcronyms = AcronymInlineMacroProcessor.acronymsInstances();
         List<String> sortedAcronyms = new ArrayList<>(docInlineAcronyms);
         Collections.sort(sortedAcronyms);
+        
+        Logger.getInstance().log("Generating glossary with "+sortedAcronyms.size()+" terms.", Severity.DEBUG);
         
         for (String acronym:sortedAcronyms){
             

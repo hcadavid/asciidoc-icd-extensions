@@ -12,6 +12,7 @@ import org.asciidoctor.ast.ContentNode;
 import org.asciidoctor.ast.PhraseNode;
 import org.asciidoctor.extension.InlineMacroProcessor;
 import rug.icdtools.logging.Logger;
+import rug.icdtools.logging.Severity;
 
 /**
  *
@@ -28,7 +29,7 @@ public class AcronymInlineMacroProcessor extends InlineMacroProcessor {
    @Override
     public Object process(ContentNode contentNode, String term, Map<String, Object> attributes) {
 
-
+        Logger.getInstance().log("Adding/formatting glossary term:"+term, Severity.DEBUG);
         // Define options for an 'anchor' element:
         Map<String, Object> options = new HashMap<>();
         options.put("type", ":link");

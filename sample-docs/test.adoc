@@ -9,35 +9,13 @@ Content entered directly below the header but before the first section heading i
 
 Writing an AsciiDoctor extension using Java is easy! Ask twitter:mrhaki[] about it.
 
-
-
-
-asdasdsad
-
-<<thelink>>
-
 This is a user manual for an empty project.
-
-
-
-
-== Glossary
-
-
-glossary::default with space[]
-
-
-Here is a word that refers to acr:AIPS++[] and to acr:DDT[], a term related to the acr:LOFAR1[], and acr:Casacore[].
-
-
-Finally, acr:LOFAR2.0__SW[]
-
-
-
 
 == First level heading
 
-[systemrdl,regmapname=signal]
+This is an inline RDL
+
+[systemrdl]
 -----
 addrmap tiny {
     reg {
@@ -55,26 +33,7 @@ addrmap tiny {
 };
 -----
 
-
-[systemrdl]
------
-addrmap tiny2 {
-    reg {
-        field {
- 	    name="reg_aa";
-            sw=rw;
-            hw=r;
-        } f1[8] = 123;
-
-        field {
-            sw=r;
-            hw=w;
-        } f2[16];
-    }r1;
-};
------
-
-
+This is an RDL from a file
 
 systemrdl::rover.rdl[]
 dummy::dummy[]
@@ -142,9 +101,6 @@ ____
 I am a verse block.
   Indents and endlines are preserved in verse blocks.
 ____
-
-
-asdas xx [[thelink]] yy asdsad asdsadsa
 
 == First level heading
 
