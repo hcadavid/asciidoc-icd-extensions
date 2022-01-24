@@ -65,8 +65,10 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
             
         } catch (ExternalCommandExecutionException ex) {
             DocProcessLogger.getInstance().log(String.format("Error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
+            parseContent(parent, Arrays.asList(new String[]{"WARNING: [systemrdl] block not generated during the building process due to an error (see details on the log files)"}));
         } catch (IOException ex) {             
             DocProcessLogger.getInstance().log(String.format("Internal error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
+            parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl:: block not generated during the building process due to an error (see details on the log files)"}));
         }
         
         //add no further elements to the document

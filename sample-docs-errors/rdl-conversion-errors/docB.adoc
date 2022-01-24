@@ -24,13 +24,7 @@ This is a user manual for an empty project.
 == Glossary
 
 
-glossary::default with space[]
-
-
-Here is a word that refers to acr:AIPS++[] and to acr:DDT[], a term related to the acr:LOFAR1[], and acr:Casacore[].
-
-
-Finally, acr:LOFAR2.0__SW[]
+Here is a word that refers to acr:AIPS++[] and to acr:DDT[], a term related to the acr:LOFAR1[].
 
 
 
@@ -41,7 +35,7 @@ Finally, acr:LOFAR2.0__SW[]
 
 [systemrdl]
 -----
-addrmap tiny2 {
+addrmxap tiny2 {
     reg {
         field {
  	    name="reg_aa";
@@ -59,7 +53,7 @@ addrmap tiny2 {
 
 Error: wrong file name
 
-systemrdl::rover.rdl[]
+systemrdl::rsssver.rdl[]
 
 This is a paragraph with a *bold* word and an _italicized_ word.
 
@@ -126,7 +120,7 @@ I am a verse block.
 ____
 
 
-asdas xx [[thelink]] yy asdsad asdsadsa
+asdas xx [[thelink]] yy asdsad asdsadsa acr:LOFAR2.0__SW[]
 
 == First level heading
 
@@ -144,3 +138,7 @@ The text at the end of this sentence is cross referenced to <<_third_level_headi
 
 This is a link to the https://docs.asciidoctor.org/home/[Asciidoctor documentation].
 This is an attribute reference {url-quickref}[that links this text to the AsciiDoc Syntax Quick Reference].
+
+== Glossary at the end
+
+glossary::default with space[]

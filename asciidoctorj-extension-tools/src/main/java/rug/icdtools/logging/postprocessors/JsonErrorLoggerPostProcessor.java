@@ -78,7 +78,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 try ( PrintWriter out = new PrintWriter(errorFilePath.toFile())) {
                     out.println(mapper.writeValueAsString(docBuildProcessErrorsDescription));
                 } catch (JsonProcessingException | FileNotFoundException ex) {
-                    DocProcessLogger.getInstance().log("There were errors during document build process, but the report file couldn't be generated due to an internal error. Aborting generation with error code 1. Cause:"+ex, Severity.FATAL);
+                    DocProcessLogger.getInstance().log("There were errors during document build process, but the report file couldn't be generated due to an internal error. Aborting generation with error code 1. Cause:"+ex, Severity.INFO);
                     System.exit(1);
                 } 
                 

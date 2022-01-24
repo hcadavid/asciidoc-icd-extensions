@@ -39,26 +39,7 @@ Finally, acr:LOFAR2.0__SW[]
 
 [systemrdl,regmapname=signal]
 -----
-addrmap tiny {
-    resdsg {
-        field {
- 	    namasdsadsae="reg_aa";
-            sw=rw;
-            hw=r;
-        } f1[8] = 123;
-
-        field {
-            sw=r;
-            hw=w;
-        } f2[16];
-    }r1;
-};
------
-
-
-[systemrdl]
------
-addrmap tiny2 {
+axddrmap tiny {
     reg {
         field {
  	    name="reg_aa";
@@ -73,6 +54,7 @@ addrmap tiny2 {
     }r1;
 };
 -----
+
 
 
 

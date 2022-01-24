@@ -65,6 +65,10 @@ public class GlossaryPostProcessor extends Postprocessor {
             glossaryPlaceholder.text(sb.toString());
         }
 
+        //Reset acronyms instances so existing ones are not included
+        //on other documents processed during the build process.
+        AcronymInlineMacroProcessor.resetAcronymsInstancesSet();
+        
         return doc.html().replace("&lt;", "<").replace("&gt;", ">");
 
     }

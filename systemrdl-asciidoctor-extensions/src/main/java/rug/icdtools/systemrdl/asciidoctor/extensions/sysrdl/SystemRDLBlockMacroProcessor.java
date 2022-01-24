@@ -7,6 +7,8 @@ package rug.icdtools.systemrdl.asciidoctor.extensions.sysrdl;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import org.apache.commons.io.FilenameUtils;
@@ -38,19 +40,21 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
 
             if (!rdlSourcePath.toFile().exists()) {
                 DocProcessLogger.getInstance().log(String.format("SystemRDL file given as a target (%s) in systemrdl:: macro (line %s in file %s) was not found:",target,parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile()), Severity.ERROR);
+                parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl block not generated during the building process due to an error (see details on the log files)"}));
             } else {
                 SystemRDL2AsciidocConverter.convertAndAddToOutput(FilenameUtils.removeExtension(target), rdlSourcePath.toFile(), parent, this);
             }
 
         } catch (ExternalCommandExecutionException ex) {
             DocProcessLogger.getInstance().log(String.format("Error while evaluating the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
+            parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl block not generated during the building process due to an error (see details on the log files)"}));
         } catch (IOException ex) {             
             DocProcessLogger.getInstance().log(String.format("Internal error while executing the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
+            parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl block not generated during the building process due to an error (see details on the log files)"}));
         }
         
         //add no further elements to the document
-        return null;
-               
+        return null;         
 
     }
 }

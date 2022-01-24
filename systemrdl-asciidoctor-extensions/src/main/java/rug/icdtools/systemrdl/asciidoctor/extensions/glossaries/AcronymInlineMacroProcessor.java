@@ -26,6 +26,10 @@ public class AcronymInlineMacroProcessor extends InlineMacroProcessor {
         return acronymsInstancesSet;
     }
     
+    public static void resetAcronymsInstancesSet(){
+        acronymsInstancesSet.clear();
+    }
+    
    @Override
     public Object process(ContentNode contentNode, String term, Map<String, Object> attributes) {
 
