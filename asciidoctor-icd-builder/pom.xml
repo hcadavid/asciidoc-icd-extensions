@@ -43,20 +43,6 @@
                         <version>1.0-SNAPSHOT</version>
                     </dependency>
                     
-                    <!-- Twitter extension for AsciidoctorJ -->
-                    
-                    <dependency>
-                        <groupId>org.asciidoctor.maven</groupId>
-                        <artifactId>asciidoctorj-twitter-extension</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
-                    </dependency>
-                    
-                    <!-- Dummy extension for AsciidoctorJ -->                
-                    <dependency>
-                        <groupId>rug.icdtools</groupId>
-                        <artifactId>Dummy-extension</artifactId>
-                        <version>1.0-SNAPSHOT</version>
-                    </dependency>
                     
                     <dependency>
                         <groupId>rug.icdtools</groupId>

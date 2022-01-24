@@ -32,7 +32,7 @@ public class DummyMacro extends InlineMacroProcessor {
         //if (true) throw new RuntimeException("&&&&& cause");
         
         if (macroValue == null || macroValue.isEmpty() || macroValue.equals("dummy")) {
-            Logger.getInstance().log("TEST OF A CUSTOM LOGGER WITHIN DUMMY MACRO");
+            Logger.getInstance().log("TEST OF A CUSTOM LOGGER WITHIN DUMMY MACRO",rug.icdtools.logging.Severity.DEBUG);
             
             org.asciidoctor.log.LogRecord log=new org.asciidoctor.log.LogRecord(Severity.INFO, "TEST OF ASCIID LOGGER WITHIN DUMMY MACRO");
             LOGGER.log(asciidocLogToJavalog(log));
