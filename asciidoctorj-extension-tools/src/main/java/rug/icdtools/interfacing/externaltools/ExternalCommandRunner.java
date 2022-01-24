@@ -74,7 +74,7 @@ public class ExternalCommandRunner {
                 throw new ExternalCommandExecutionException("Command ["+String.join(",",command)+"] returned an error code:"+exitCode+". Error message:"+stderrText.toString());
             }
             if (!stderrText.toString().trim().equals("")) {
-                throw new RuntimeException("Command ["+String.join(",",command)+"] returned an error on STDERR:" + stderrText.toString());
+                throw new ExternalCommandExecutionException("Command ["+String.join(",",command)+"] returned an error on STDERR:" + stderrText.toString());
             }
         } catch (IOException e){
             throw new ExternalCommandExecutionException("Command ["+String.join(",",command)+"] failed due to an I/O error:"+e.getMessage(),e);

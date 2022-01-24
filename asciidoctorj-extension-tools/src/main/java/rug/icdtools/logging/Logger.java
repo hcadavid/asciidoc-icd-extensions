@@ -29,8 +29,8 @@ public class Logger {
         return instance;
     }
     
-    public void log(String l){
-        logger.log(l);
+    public void log(String log, Severity severity){
+        logger.log(log,severity);
     }
     
     

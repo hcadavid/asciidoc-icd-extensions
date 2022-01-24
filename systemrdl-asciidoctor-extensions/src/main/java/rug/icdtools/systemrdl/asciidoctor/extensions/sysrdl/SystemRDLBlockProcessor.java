@@ -17,6 +17,7 @@ import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;
 import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
 import rug.icdtools.logging.Logger;
+import rug.icdtools.logging.Severity;
 
 /**
  *
@@ -57,13 +58,17 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
             regMapName = regMapNameAttValue!=null && regMapNameAttValue instanceof String?(String)regMapNameAttValue:RandomStringUtils.randomAlphabetic(12).toUpperCase();
             SystemRDL2AsciidocConverter.convertAndAddToOutput(regMapName,tmpInput, parent, this);
 
-            Logger.getInstance().log("Executing inline SystemRDL Block Processor");
+            Logger.getInstance().log("Executing inline SystemRDL Block Processor",Severity.DEBUG);
 
-            return null;
+            
+            
         } catch (IOException | ExternalCommandExecutionException ex) {
-            Logger.getInstance().log("ERROR >>>>" + ex.getLocalizedMessage());
-            throw new RuntimeException(ex);
-        }
+            Logger.getInstance().log(ex.getLocalizedMessage(),Severity.ERROR);          
+        } 
+        
+        //add no further elements to the document
+        return null;
+
 
     }
 

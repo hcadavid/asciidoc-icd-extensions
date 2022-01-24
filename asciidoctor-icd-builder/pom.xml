@@ -106,6 +106,7 @@
                             <outputDirectory>${OUTPUT_PATH}</outputDirectory>
                             <!--<backend>pdf</backend>-->
                             <backend>html</backend>
+                            <sourcemap>true</sourcemap>
                             <attributes> 
                                 <imagesdir>./images</imagesdir>
                                 <toc>left</toc>

@@ -5,17 +5,17 @@
 package rug.icdtools.logging.stdoutlogger;
 
 import rug.icdtools.logging.AbstractLogger;
+import rug.icdtools.logging.Severity;
 
 /**
  *
  * @author hcadavid
  */
-public class StdoutLogger implements AbstractLogger{
+public class StdoutLogger implements AbstractLogger {
 
     @Override
-    public void log(String l) {
-              System.out.println(l);
+    public void log(String log, Severity severity) {
+        System.out.println(String.format("[%s] - %s", severity, log));
     }
-    
-    
+
 }

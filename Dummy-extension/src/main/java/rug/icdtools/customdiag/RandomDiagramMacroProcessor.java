@@ -22,6 +22,7 @@ import org.asciidoctor.extension.BlockMacroProcessor;
 import org.asciidoctor.extension.Name;
 import rug.icdtools.logging.AbstractLogger;
 import rug.icdtools.logging.Logger;
+import rug.icdtools.logging.Severity;
 
 /**
  *
@@ -42,7 +43,7 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
     public Object process(StructuralNode parent, String target, Map<String, Object> map) {
         try {
 
-            Logger.getInstance().log("E>>>>>>>RANDOM DIAGRAM MACRO PROCESSOR:" + target);            
+            Logger.getInstance().log("E>>>>>>>RANDOM DIAGRAM MACRO PROCESSOR:" + target,Severity.DEBUG);            
 
             //target is expectd to be relative to ASCIIDOC document's source
             Path inputPath = Paths.get(System.getProperty("ASCIIDOC_SOURCE_PATH"));
@@ -84,11 +85,9 @@ public class RandomDiagramMacroProcessor extends BlockMacroProcessor {
             return this.createBlock(parent, "pass", "<a href=\"rover.rdl\">rover.rdl</a>");
 
         } catch (IOException e) {
-            //e.printStackTrace();  
-            Logger.getInstance().log("ERROR >>>>"+e.getLocalizedMessage());
-            throw new RuntimeException(e);
+            Logger.getInstance().log("ERROR >>>>"+e.getLocalizedMessage(),Severity.ERROR);
         } catch (ExternalCommandExecutionException ex) {            
-            Logger.getInstance().log("ERROR >>>>"+ex.getLocalizedMessage());
+            Logger.getInstance().log("ERROR >>>>"+ex.getLocalizedMessage(),Severity.ERROR);
             throw new RuntimeException(ex);
         } finally {
             return null;
