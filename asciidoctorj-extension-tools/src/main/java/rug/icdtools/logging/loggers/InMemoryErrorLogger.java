@@ -32,6 +32,8 @@ public class InMemoryErrorLogger implements AbstractLogger{
     //use other intermediate persistence approaches (for potentially larger logs)
     private static final List<String> errors = new LinkedList<>();
     private static final List<String> fatalErrors = new LinkedList<>();
+    private static final int STDOUD_MAX_LINES = 80;
+    
     
     public List<String> getErrors() {
         return errors;
@@ -53,20 +55,25 @@ public class InMemoryErrorLogger implements AbstractLogger{
     public void log(String log, Severity severity) {
         switch (severity) {
             case ERROR:
-                //System.out.println(String.format("*[%s] - %s", severity, log));
+                
+                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_LINES)));
                 errors.add(log);
                 break;
             case FATAL:
-                //System.out.println(String.format("*[%s] - %s", severity, log));
+                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_LINES)));
                 fatalErrors.add(log);
                 break;
             default:
-                System.out.println(String.format("*[%s] - %s", severity, log));
+                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_LINES)));
                 break;        
         }
         
     }
     
+    private String subString(String s, int maxChars) {
+        return s.substring(0, Math.min(s.length(), maxChars));
+    }
+
     
     
 }
