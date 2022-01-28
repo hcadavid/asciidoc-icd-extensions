@@ -12,12 +12,12 @@ USER root
 #COPY --from=node /usr/local/bin /usr/local/bin
 
 # Regular dependencies installation approach (doesn't work for netlify-cli)
-#RUN apk add --update nodejs nodejs-npm
+RUN apk add --update nodejs nodejs-npm
 #ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
 #RUN echo "${ALPINE_MIRROR}/v3.12/main/" >> /etc/apk/repositories
 #RUN apk add nodejs --repository="http://dl-cdn.alpinelinux.org/alpine/v3.12/main/"
 #RUN node --version
-#RUN npm install -g bytefield-svg
+RUN npm install -g bytefield-svg
 
 #RUN npm install -g netlify-cli --unsafe-perm=true
 
