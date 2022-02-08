@@ -15,8 +15,9 @@ import java.util.Scanner;
 
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BaseProcessor;
-import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
-import rug.icdtools.interfacing.externaltools.ExternalCommandRunner;
+import rug.icdtools.interfacing.externaltools.CommandExecutionException;
+import rug.icdtools.interfacing.externaltools.CommandGeneratedException;
+import rug.icdtools.interfacing.externaltools.CommandRunner;
 
 /**
  *
@@ -24,11 +25,11 @@ import rug.icdtools.interfacing.externaltools.ExternalCommandRunner;
  */
 public class SystemRDL2AsciidocConverter {
 
-    public static void convertAndAddToOutput(String registryMapName, File input, StructuralNode parent, BaseProcessor asccidocProcessor) throws ExternalCommandExecutionException, FileNotFoundException, IOException {
+    public static void convertAndAddToOutput(String registryMapName, File input, StructuralNode parent, BaseProcessor asccidocProcessor) throws CommandGeneratedException, FileNotFoundException, IOException, CommandExecutionException {
 
         File tmpFile = File.createTempFile("sysardl2adoc-", ".converter_output", null);
 
-        ExternalCommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_adoc.sh", input.getAbsolutePath(), tmpFile.getAbsolutePath());
+        CommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_adoc.sh", input.getAbsolutePath(), tmpFile.getAbsolutePath());
 
         List<String> newOutputAsciidocLines;
         try ( Scanner s = new Scanner(tmpFile)) {
@@ -41,7 +42,7 @@ public class SystemRDL2AsciidocConverter {
         //generate a C header and a link to it
         Path outputPath = Paths.get(System.getProperty("OUTPUT_PATH"));
         String headerFileName = registryMapName + ".h";
-        ExternalCommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_cheader.sh", input.getAbsolutePath(), outputPath.resolve(headerFileName).toFile().getAbsolutePath());
+        CommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_cheader.sh", input.getAbsolutePath(), outputPath.resolve(headerFileName).toFile().getAbsolutePath());
 
         newOutputAsciidocLines.add(String.format("link:%s[%s]", headerFileName, "C header"));
 

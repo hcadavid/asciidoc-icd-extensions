@@ -5,6 +5,7 @@
 package rug.icdtools.systemrdl.asciidoctor.extensions.sysrdl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,11 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang.RandomStringUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;
-import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
+import rug.icdtools.interfacing.externaltools.CommandExecutionException;
+import rug.icdtools.interfacing.externaltools.CommandGeneratedException;
 import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
 
@@ -60,16 +63,14 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
             SystemRDL2AsciidocConverter.convertAndAddToOutput(regMapName,tmpInput, parent, this);
 
             DocProcessLogger.getInstance().log("Executing inline SystemRDL Block Processor",Severity.DEBUG);
-
-            
-            
-        } catch (ExternalCommandExecutionException ex) {
+    
+        } catch (CommandGeneratedException ex) {
             DocProcessLogger.getInstance().log(String.format("Error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
             parseContent(parent, Arrays.asList(new String[]{"WARNING: [systemrdl] block not generated during the building process due to an error (see details on the log files)"}));
-        } catch (IOException ex) {             
+        } catch (IOException | CommandExecutionException ex) {             
             DocProcessLogger.getInstance().log(String.format("Internal error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
-            parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl:: block not generated during the building process due to an error (see details on the log files)"}));
-        }
+            parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl:: block not generated during the building process due to an error (see details on the log files)"})); 
+        } 
         
         //add no further elements to the document
         return null;

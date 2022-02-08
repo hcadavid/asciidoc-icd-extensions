@@ -4,17 +4,19 @@
  */
 package rug.icdtools.systemrdl.asciidoctor.extensions.sysrdl;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockMacroProcessor;
-import rug.icdtools.interfacing.externaltools.ExternalCommandExecutionException;
+import rug.icdtools.interfacing.externaltools.CommandExecutionException;
+import rug.icdtools.interfacing.externaltools.CommandGeneratedException;
 import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
 
@@ -45,10 +47,10 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
                 SystemRDL2AsciidocConverter.convertAndAddToOutput(FilenameUtils.removeExtension(target), rdlSourcePath.toFile(), parent, this);
             }
 
-        } catch (ExternalCommandExecutionException ex) {
+        } catch (CommandGeneratedException ex) {
             DocProcessLogger.getInstance().log(String.format("Error while evaluating the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
             parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl block not generated during the building process due to an error (see details on the log files)"}));
-        } catch (IOException ex) {             
+        } catch (IOException | CommandExecutionException ex) {
             DocProcessLogger.getInstance().log(String.format("Internal error while executing the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
             parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl block not generated during the building process due to an error (see details on the log files)"}));
         }

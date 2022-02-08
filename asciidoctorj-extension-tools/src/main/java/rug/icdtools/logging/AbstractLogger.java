@@ -11,6 +11,6 @@ package rug.icdtools.logging;
  */
 public interface AbstractLogger {
     
-    public void log(String log, Severity severity);
+    public void log(String detailedLog, Severity severity);
     
 }
