@@ -32,6 +32,8 @@ import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.Postprocessor;
 import rug.icdtools.logging.loggers.InMemoryErrorLogger;
 import org.apache.commons.io.FilenameUtils;
+import rug.icdtools.docsapiclient.APIAccessException;
+import rug.icdtools.docsapiclient.DashboardAPIClient;
 import rug.icdtools.logging.AbstractLogger;
 import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
@@ -52,38 +54,31 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
         Path outputPath = Paths.get(System.getProperty("OUTPUT_PATH"));
         
         Path errorFilePath = outputPath.resolve(docFileName + ".errlogs");
-        
-        
+                
         AbstractLogger logger = DocProcessLogger.getInstance();
-
-        //DocProcessLogger.getInstance().log("", Severity.DEBUG);
-
+        
         if (logger instanceof InMemoryErrorLogger) {
 
-            //System.out.println("Postprocessor .2>>>>>>"+dcmnt.toString());
-            InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
+            try {
+                InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
+                dumpToFile(mlogger, docFileName, errorFilePath);
 
-            if (!mlogger.isErrorLogsEmpty()) {
-                ObjectMapper mapper = new ObjectMapper();
+                //If BACKEND_URL system property is defined, also dump the error details there
+                String backendURL = System.getProperty("BACKEND_URL");
+                if (backendURL != null) {
+                    DocProcessLogger.getInstance().log("Posting "+docFileName+" at"+backendURL, Severity.INFO);
+                    postToAPI(mlogger, docFileName, backendURL);
+                }
 
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                LocalDateTime now = LocalDateTime.now();
-
-                BuildProcessOutputDescription docBuildProcessErrorsDescription = new BuildProcessOutputDescription();
-                docBuildProcessErrorsDescription.setDate(dtf.format(now));
-                docBuildProcessErrorsDescription.setdocName(docFileName);
-                docBuildProcessErrorsDescription.setErrors(mlogger.getErrors());
-                docBuildProcessErrorsDescription.setFatalErrors(mlogger.getFatalErrors());
-
-                try ( PrintWriter out = new PrintWriter(errorFilePath.toFile())) {
-                    out.println(mapper.writeValueAsString(docBuildProcessErrorsDescription));
-                } catch (JsonProcessingException | FileNotFoundException ex) {
-                    DocProcessLogger.getInstance().log("There were errors during document build process, but the report file couldn't be generated due to an internal error. Aborting generation with error code 1. Cause:"+ex, Severity.INFO);
-                    System.exit(1);
-                } 
+                mlogger.resetErrorLogs();       
                 
-                mlogger.resetErrorLogs();
-       
+            } catch (UnableToReportErrorsException ex) {
+                ex.printStackTrace();
+                //If this exception happens, there are no means to report previous errors
+                //so it must exit with a non-zero result to make sure build process is
+                //reported as failed.
+                DocProcessLogger.getInstance().log("Unable to report previous errors. Building process must be stopped."+ex.getLocalizedMessage(), Severity.FATAL);
+                System.exit(1);
             }
 
         }
@@ -92,6 +87,85 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
 
     }
     
+    /**
+     * 
+     * @param logger
+     * @param docFileName
+     * @param logFilePath
+     * @throws UnableToReportErrorsException 
+     */
+    private void dumpToFile(InMemoryErrorLogger logger,String docFileName, Path logFilePath) throws UnableToReportErrorsException{
+        if (!logger.isErrorLogsEmpty()) {
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+
+            BuildProcessOutputDescription docBuildProcessErrorsDescription = new BuildProcessOutputDescription();
+            docBuildProcessErrorsDescription.setDate(dtf.format(now));
+            docBuildProcessErrorsDescription.setdocName(docFileName);
+            docBuildProcessErrorsDescription.setErrors(logger.getErrors());
+            docBuildProcessErrorsDescription.setFatalErrors(logger.getFatalErrors());
+
+            String jsonObject;
+
+            try ( PrintWriter out = new PrintWriter(logFilePath.toFile())) {
+                jsonObject = mapper.writeValueAsString(docBuildProcessErrorsDescription);
+                out.println(jsonObject);
+
+            } catch (JsonProcessingException | FileNotFoundException ex) {
+                throw new UnableToReportErrorsException("There were errors during document build process, but the report file couldn't be generated due to an internal error.", ex);
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param logger
+     * @param docFileName
+     * @param backendURL 
+     */
+    private void postToAPI(InMemoryErrorLogger logger,String docFileName, String backendURL) throws UnableToReportErrorsException{
+        if (!logger.isErrorLogsEmpty()) {
+            String credentials = System.getProperty("BACKEND_CREDENTIALS"); 
+            String pipelineId = System.getProperty("PIPELINE_ID");
+            String icdId = System.getProperty("PROJECT_NAME");
+
+           
+            if (credentials==null){
+                throw new UnableToReportErrorsException("The document build process was expected to report errors to the API at ["+backendURL+"], but no credentials were provided (BACKEND_CREDENTIALS sysenv)");
+            }
+            else if (pipelineId == null || icdId == null){
+                throw new UnableToReportErrorsException("The document build process was expected to report errors to the API at ["+backendURL+"], but required GitLab environment variables were not found (the process is expected to run within a GitLab CI/CD environment)");                
+            }
+            else{
+                ObjectMapper mapper = new ObjectMapper();
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+
+                BuildProcessOutputDescription docBuildProcessErrorsDescription = new BuildProcessOutputDescription();
+                docBuildProcessErrorsDescription.setDate(dtf.format(now));
+                docBuildProcessErrorsDescription.setdocName(docFileName);
+                docBuildProcessErrorsDescription.setErrors(logger.getErrors());
+                docBuildProcessErrorsDescription.setFatalErrors(logger.getFatalErrors());
+
+                String jsonObject;
+                try {
+                    //Posting to https://[apiurl]/v1/icds/{icdid}/{pipelineid}/errors")
+                    jsonObject = mapper.writeValueAsString(docBuildProcessErrorsDescription);
+                    DashboardAPIClient apiClient = new DashboardAPIClient(credentials,backendURL);
+                    apiClient.postResource("/v1/icds/" + icdId + "/" + pipelineId + "/errors", jsonObject);
+
+                } catch (JsonProcessingException | APIAccessException ex) {
+                    throw new UnableToReportErrorsException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);
+                }
+
+            }
+        }
+        
+    }
 
     private class BuildProcessOutputDescription {
 
