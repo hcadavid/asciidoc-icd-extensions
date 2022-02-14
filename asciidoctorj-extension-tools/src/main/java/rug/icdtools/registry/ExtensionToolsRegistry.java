@@ -20,6 +20,7 @@ package rug.icdtools.registry;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.extension.JavaExtensionRegistry;
 import org.asciidoctor.jruby.extension.spi.ExtensionRegistry;
+import rug.icdtools.dashboard.postprocessors.DocumentMetadataPostProcessor;
 import rug.icdtools.logging.postprocessors.JsonErrorLoggerPostProcessor;
 
 /**
@@ -32,6 +33,7 @@ public class ExtensionToolsRegistry implements ExtensionRegistry {
     public void register(Asciidoctor asciidoctor) {
         JavaExtensionRegistry javaExtensionRegistry = asciidoctor.javaExtensionRegistry();        
         javaExtensionRegistry.postprocessor(JsonErrorLoggerPostProcessor.class);
+        javaExtensionRegistry.postprocessor(DocumentMetadataPostProcessor.class);
     }
 
 }
