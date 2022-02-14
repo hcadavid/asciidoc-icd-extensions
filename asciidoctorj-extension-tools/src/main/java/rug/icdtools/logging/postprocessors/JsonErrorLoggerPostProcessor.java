@@ -73,7 +73,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 mlogger.resetErrorLogs();       
                 
             } catch (UnableToReportErrorsException ex) {
-                ex.printStackTrace();
+                //ex.printStackTrace();
                 //If this exception happens, there are no means to report previous errors
                 //so it must exit with a non-zero result to make sure build process is
                 //reported as failed.

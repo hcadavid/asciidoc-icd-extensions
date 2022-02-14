@@ -32,7 +32,7 @@ public class InMemoryErrorLogger implements AbstractLogger{
     //use other intermediate persistence approaches (for potentially larger logs)
     private static final List<String> errors = new LinkedList<>();
     private static final List<String> fatalErrors = new LinkedList<>();
-    private static final int STDOUD_MAX_LINES = 200;
+    private static final int STDOUD_MAX_LINES = 300;
     
     
     public List<String> getErrors() {

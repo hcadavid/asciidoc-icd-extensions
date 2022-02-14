@@ -46,9 +46,13 @@ public class DashboardAPIClient {
 
     public DashboardAPIClient(String credentials,String baseURL) throws APIAccessException {
         try {
+            if (!credentials.contains(":")){
+                throw new APIAccessException("Unable to use documentation pipeline API at:"+baseURL+". Wrong credentials format, expected user:password ");
+            }
+            this.authToken = "Bearer " + getToken(baseURL,credentials);
             this.baseURL = baseURL;
             this.httpClient = HttpClients.createDefault();
-            this.authToken = "Bearer " + getToken(baseURL,credentials);
+            
         } catch (IOException ex) {
             throw new APIAccessException("Unable to use documentation pipeline API at:"+baseURL,ex);
         }
@@ -57,17 +61,20 @@ public class DashboardAPIClient {
     /**
      * 
      * @param baseURL
-     * @param credentials
+     * @param credentials (format user:password)
      * @return
      * @throws JsonProcessingException
      * @throws IOException 
      */
-    private String getToken(String baseURL, String credentials) throws JsonProcessingException, IOException {
+    private String getToken(String baseURL, String credentials) throws JsonProcessingException, IOException, APIAccessException {
         HttpPost post = new HttpPost(baseURL+"/auth/login");
 
         ObjectMapper mapper = new ObjectMapper();
 
-        HttpEntity stringEntity = new StringEntity(mapper.writeValueAsString(new JwtAuthenticationRequest("user", "123")), ContentType.APPLICATION_JSON);
+        String user=credentials.substring(0,credentials.indexOf(":"));
+        String pwd =credentials.substring(credentials.indexOf(":")+1); 
+        
+        HttpEntity stringEntity = new StringEntity(mapper.writeValueAsString(new JwtAuthenticationRequest(user, pwd)), ContentType.APPLICATION_JSON);
 
         post.setEntity(stringEntity);
 
@@ -77,6 +84,11 @@ public class DashboardAPIClient {
 
             JsonObject jsonResp = new Gson().fromJson(token, JsonObject.class);
 
+            if (jsonResp == null){
+                throw new APIAccessException("Failed API authentication for user ["+user+"]");
+            }
+            
+            
             return jsonResp.get("access_token").getAsString();
         }
 
