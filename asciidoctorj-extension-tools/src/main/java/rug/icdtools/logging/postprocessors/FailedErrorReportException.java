@@ -21,13 +21,13 @@ package rug.icdtools.logging.postprocessors;
  *
  * @author hcadavid
  */
-public class UnableToReportErrorsException extends Exception {
+public class FailedErrorReportException extends Exception {
 
-    public UnableToReportErrorsException(String message) {
+    public FailedErrorReportException(String message) {
         super(message);
     }
 
-    public UnableToReportErrorsException(String message, Throwable cause) {
+    public FailedErrorReportException(String message, Throwable cause) {
         super(message, cause);
     }
     

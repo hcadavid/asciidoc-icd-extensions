@@ -27,6 +27,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.config.Lookup;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -109,6 +110,29 @@ public class DashboardAPIClient {
             postRequest.setEntity(new StringEntity(jsonObject));
             
             HttpResponse response = httpClient.execute(postRequest);
+            
+            if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300 ){
+                throw new APIAccessException("Failure while posting resource "+resource+". Object:"+jsonObject+". HTTP Code:"+response.getStatusLine().getStatusCode());
+            }
+                       
+        } catch (JsonProcessingException e ) {
+            throw new APIAccessException("Failure while posting resource "+resource+". Object:"+jsonObject,e);
+        } catch (IOException e) {
+            throw new APIAccessException("Failure while posting resource "+resource+". Object:"+jsonObject,e);
+        }
+
+    }
+    
+    
+    public void putResource(String resource,String jsonObject) throws APIAccessException{
+        try {
+
+            HttpPut putRequest = new HttpPut(baseURL + resource);            
+            putRequest.addHeader("Authorization", authToken);
+            putRequest.addHeader("Content-Type", "application/json");
+            putRequest.setEntity(new StringEntity(jsonObject));
+            
+            HttpResponse response = httpClient.execute(putRequest);
             
             if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300 ){
                 throw new APIAccessException("Failure while posting resource "+resource+". Object:"+jsonObject+". HTTP Code:"+response.getStatusLine().getStatusCode());

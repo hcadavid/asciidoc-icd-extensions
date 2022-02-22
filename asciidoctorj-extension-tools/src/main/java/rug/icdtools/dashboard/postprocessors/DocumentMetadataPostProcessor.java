@@ -17,10 +17,16 @@
  */
 package rug.icdtools.dashboard.postprocessors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,8 +35,12 @@ import java.util.stream.Stream;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.Postprocessor;
+import rug.icdtools.docsapiclient.APIAccessException;
+import rug.icdtools.docsapiclient.DashboardAPIClient;
+import rug.icdtools.logging.AbstractLogger;
 import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
+import rug.icdtools.logging.loggers.InMemoryErrorLogger;
 
 /**
  *
@@ -38,18 +48,33 @@ import rug.icdtools.logging.Severity;
  */
 public class DocumentMetadataPostProcessor extends Postprocessor {
 
-    private static boolean firstDocVisited = false;
+    private static boolean visitingFirstDocument = true;
 
     private static Set<String> notVisited;
 
     @Override
     public String process(Document dcmnt, String output) {
 
+        //This post-processor if used onlt if BACKEND_URL variable (dashboard API URL) is defined
+        String backendURL = System.getProperty("BACKEND_URL");
+        if (backendURL != null) {
+            postToAPIWhenBuildingFinished(dcmnt,backendURL);
+        } else {
+            DocProcessLogger.getInstance().log("BACKEND_URL environment variable not set. Documentation dashboard API won't be used to post published document metadata.", Severity.INFO);
+        }
+        
+        return output;
+
+    }
+    
+    
+    private void postToAPIWhenBuildingFinished(Document dcmnt, String backendURL){
         StructuralNode stdoc = (StructuralNode) dcmnt;
         
         String currentFilePath = Paths.get(stdoc.getSourceLocation().getDir()).resolve(stdoc.getSourceLocation().getFile()).toString();
         
-        if (!firstDocVisited) {
+        //identify the documents to be visited by the post-processor so it can be identified which is the last one
+        if (visitingFirstDocument) {
             
             try {
                 try ( Stream<Path> walk = Files.walk(Paths.get(((StructuralNode) dcmnt).getSourceLocation().getDir()))) {
@@ -64,19 +89,111 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
             } catch (IOException ex) {
                 Logger.getLogger(DocumentMetadataPostProcessor.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
-                firstDocVisited = true;
-                DocProcessLogger.getInstance().log(">>>>>>"+notVisited.size(),Severity.INFO);
+                visitingFirstDocument = false;
+                DocProcessLogger.getInstance().log("Documents to be visited before executing the post-processor:"+notVisited.size(),Severity.INFO);
             }
         }
-        
-        DocProcessLogger.getInstance().log("Removing from documents to be visited :"+currentFilePath+":"+notVisited.remove(currentFilePath),Severity.INFO);
+        boolean currentDocVisited = notVisited.remove(currentFilePath);
+        DocProcessLogger.getInstance().log("Removing from documents to be visited :"+currentFilePath+":"+currentDocVisited,Severity.INFO);
                
-        //the last element of the building process
+        //True if this is the last document of the building process
         if (notVisited.isEmpty()) {
-            DocProcessLogger.getInstance().log(">>>POSTING METADATA FROM "+this.hashCode(), Severity.INFO);
+            AbstractLogger logger = DocProcessLogger.getInstance();
+            
+            //Post metadata to the dashboard API as succesfully published document
+            if (logger instanceof InMemoryErrorLogger) {
+                InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
+                if (mlogger.isErrorLogsEmpty()){
+                    DocProcessLogger.getInstance().log("Documents built with no errors. Posting metadata to "+  backendURL, Severity.INFO);
+                    try {
+                        postToAPI(backendURL);
+                    } catch (FailedMetadataReportException ex) {
+                        
+                    }
+                    DocProcessLogger.getInstance().log(">>>POSTING METADATA FROM "+this.hashCode(), Severity.INFO);
+                }
+            }
+            
         }
-        return output;
+    }
 
+    
+    private void postToAPI(String backendURL) throws FailedMetadataReportException {
+        String[] envVars = new String[]{
+            "BACKEND_CREDENTIALS",
+            "PIPELINE_ID",
+            "PROJECT_NAME",
+            "PIPELINE_ID",
+            "DEPLOYMENT_URL",
+            "SOURCE_URL",
+            "COMMIT_AUTHOR",
+            "CREATION_DATE"
+        };
+        
+        Map<String,String> cicdEnvProperties = new HashMap<>();
+        for (String envVar: envVars){
+            String varValue = System.getProperty(envVar);
+            if (varValue==null) {
+                throw new FailedMetadataReportException("The document build process was expected to report published document's metadata to ["+backendURL+"], but required environment variables was not set:"+envVar);
+            }
+            else {
+                cicdEnvProperties.put(envVar, varValue);
+            }
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        PublishedICDMetadata icdMetadata = new PublishedICDMetadata();
+        icdMetadata.setMetadata(cicdEnvProperties);
+
+        //TODO get and add referenced documents to metadata
+        try {
+            //PUT to https://[apiurl]/v1/icds/{icdid}/current")
+            String jsonIcdMetadata = mapper.writeValueAsString(icdMetadata);
+            DashboardAPIClient apiClient = new DashboardAPIClient(cicdEnvProperties.get("BACKEND_CREDENTIALS"), backendURL);
+            String urlPath = String.format("/v1/icds/%s/current", cicdEnvProperties.get("PROJECT_NAME"));
+
+            apiClient.putResource(urlPath, jsonIcdMetadata);
+
+        } catch (JsonProcessingException | APIAccessException ex) {
+            throw new FailedMetadataReportException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);
+        }
+
+    }
+    
+}
+
+class PublishedICDMetadata implements Serializable {
+    
+    private Map<String,String> metadata;
+    
+    private List<String> referencedDocs;
+    
+    private List<String> warnings;   
+
+    public List<String> getReferencedDocs() {
+        return referencedDocs;
+    }
+
+    public void setReferencedDocs(List<String> referencedDocs) {
+        this.referencedDocs = referencedDocs;
+    }
+
+    public List<String> getWarnings() {
+        return warnings;
+    }
+
+    public void setWarnings(List<String> warnings) {
+        this.warnings = warnings;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
     }
 
 }
+

@@ -60,6 +60,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
         if (logger instanceof InMemoryErrorLogger) {
 
             try {
+                DocProcessLogger.getInstance().log("Dumping error details on "+docFileName + ".errlogs file", Severity.INFO);
                 InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
                 dumpToFile(mlogger, docFileName, errorFilePath);
 
@@ -69,10 +70,13 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                     DocProcessLogger.getInstance().log("Posting "+docFileName+" at"+backendURL, Severity.INFO);
                     postToAPI(mlogger, docFileName, backendURL);
                 }
+                else{
+                    DocProcessLogger.getInstance().log("BACKEND_URL environment variable not set. Documentation dashboard API won't be used.", Severity.INFO);
+                }
 
                 mlogger.resetErrorLogs();       
                 
-            } catch (UnableToReportErrorsException ex) {
+            } catch (FailedErrorReportException ex) {
                 //ex.printStackTrace();
                 //If this exception happens, there are no means to report previous errors
                 //so it must exit with a non-zero result to make sure build process is
@@ -92,9 +96,9 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
      * @param logger
      * @param docFileName
      * @param logFilePath
-     * @throws UnableToReportErrorsException 
+     * @throws FailedErrorReportException 
      */
-    private void dumpToFile(InMemoryErrorLogger logger,String docFileName, Path logFilePath) throws UnableToReportErrorsException{
+    private void dumpToFile(InMemoryErrorLogger logger,String docFileName, Path logFilePath) throws FailedErrorReportException{
         if (!logger.isErrorLogsEmpty()) {
 
             ObjectMapper mapper = new ObjectMapper();
@@ -115,7 +119,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 out.println(jsonObject);
 
             } catch (JsonProcessingException | FileNotFoundException ex) {
-                throw new UnableToReportErrorsException("There were errors during document build process, but the report file couldn't be generated due to an internal error.", ex);
+                throw new FailedErrorReportException("There were errors during document build process, but the report file couldn't be generated due to an internal error.", ex);
             }
         }
     }
@@ -126,7 +130,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
      * @param docFileName
      * @param backendURL 
      */
-    private void postToAPI(InMemoryErrorLogger logger,String docFileName, String backendURL) throws UnableToReportErrorsException{
+    private void postToAPI(InMemoryErrorLogger logger,String docFileName, String backendURL) throws FailedErrorReportException{
         if (!logger.isErrorLogsEmpty()) {
             String credentials = System.getProperty("BACKEND_CREDENTIALS"); 
             String pipelineId = System.getProperty("PIPELINE_ID");
@@ -134,10 +138,10 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
 
            
             if (credentials==null){
-                throw new UnableToReportErrorsException("The document build process was expected to report errors to the API at ["+backendURL+"], but no credentials were provided (BACKEND_CREDENTIALS sysenv)");
+                throw new FailedErrorReportException("The document build process was expected to report errors to the API at ["+backendURL+"], but no credentials were provided (BACKEND_CREDENTIALS sysenv)");
             }
             else if (pipelineId == null || icdId == null){
-                throw new UnableToReportErrorsException("The document build process was expected to report errors to the API at ["+backendURL+"], but required GitLab environment variables were not found (the process is expected to run within a GitLab CI/CD environment)");                
+                throw new FailedErrorReportException("The document build process was expected to report errors to the API at ["+backendURL+"], but required GitLab environment variables were not found (the process is expected to run within a GitLab CI/CD environment)");                
             }
             else{
                 ObjectMapper mapper = new ObjectMapper();
@@ -159,7 +163,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                     apiClient.postResource("/v1/icds/" + icdId + "/" + pipelineId + "/errors", jsonObject);
 
                 } catch (JsonProcessingException | APIAccessException ex) {
-                    throw new UnableToReportErrorsException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);
+                    throw new FailedErrorReportException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);
                 }
 
             }
