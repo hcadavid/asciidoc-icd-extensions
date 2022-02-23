@@ -9,5 +9,5 @@ package rug.icdtools.logging;
  * @author hcadavid
  */
 public enum Severity {
-    DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN;
+    DEBUG, FAILED_QGATE, ERROR, FATAL, INFO, UNKNOWN, WARN;
 }

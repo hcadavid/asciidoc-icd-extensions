@@ -113,12 +113,12 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
             //Post metadata to the dashboard API as succesfully published document
             if (logger instanceof InMemoryErrorLogger) {
                 InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
-                if (mlogger.isErrorLogsEmpty()) {
-                    DocProcessLogger.getInstance().log("Documents built with no errors. Posting metadata to " + backendURL, Severity.INFO);
+                if (mlogger.getGlobalFatalErrorsCount()==0 && mlogger.getGlobalErrorsCount()==0 && mlogger.getGlobalFailedQualityGatesCount()==0) {
+                    DocProcessLogger.getInstance().log("Documents built with no internal errors, document building errors, or failed quality gates. Posting metadata to " + backendURL, Severity.INFO);
                     postToAPI(backendURL);
                 }
                 else{
-                    DocProcessLogger.getInstance().log("Documents built with errors. No metadata will be posted to the API.", Severity.INFO);
+                    DocProcessLogger.getInstance().log(String.format("Documents built with %d internal errors, %d document building error, and %d failed quality gates. No metadata will be posted to the API.",mlogger.getGlobalFatalErrorsCount(),mlogger.getGlobalErrorsCount(),mlogger.getGlobalFailedQualityGatesCount()), Severity.INFO);
                 }
             }
 

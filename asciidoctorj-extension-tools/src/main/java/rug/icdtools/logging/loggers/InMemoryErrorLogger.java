@@ -26,55 +26,82 @@ import rug.icdtools.logging.Severity;
  *
  * @author hcadavid
  */
-public class InMemoryErrorLogger implements AbstractLogger{
+public class InMemoryErrorLogger implements AbstractLogger {
 
     //TODO for a proof-of-concept
     //use other intermediate persistence approaches (for potentially larger logs)
     private static final List<String> errors = new LinkedList<>();
     private static final List<String> fatalErrors = new LinkedList<>();
+    private static final List<String> failedQualityGates = new LinkedList<>();
+    private static int globalErrorsCount = 0;
+    private static int globalFailedQualityGatesCount = 0;
+    private static int globalFatalErrorsCount = 0;
+
     private static final int STDOUD_MAX_MESSAGE_LENGTH = 300;
-    private static int failedQualityGatesCount = 0;
-    
-    
+
+    public int getGlobalFatalErrorsCount() {
+        return globalFatalErrorsCount;
+    }
+
+    public int getGlobalErrorsCount() {
+        return globalErrorsCount;
+    }
+
+    public int getGlobalFailedQualityGatesCount() {
+        return globalFailedQualityGatesCount;
+    }
+
+    public List<String> getFailedQualityGates() {
+        return failedQualityGates;
+    }
+
     public List<String> getErrors() {
         return errors;
     }
+
     public List<String> getFatalErrors() {
         return fatalErrors;
     }
-    
-    public void resetErrorLogs(){
+
+    public void resetErrorLogs() {
         errors.clear();
         fatalErrors.clear();
     }
-    
-    public boolean isErrorLogsEmpty(){
+
+    public boolean isErrorLogsEmpty() {
         return errors.isEmpty() && fatalErrors.isEmpty();
     }
-    
+
     @Override
     public void log(String log, Severity severity) {
+
+        String stdoutMessage = log.length() > STDOUD_MAX_MESSAGE_LENGTH ? String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_MESSAGE_LENGTH)) : String.format("*[%s] - %s", severity, log);
+
         switch (severity) {
+            case FAILED_QGATE:
+                System.out.println(stdoutMessage);
+                failedQualityGates.add(log);
+                globalFailedQualityGatesCount++;
+                break;
             case ERROR:
-                
-                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_MESSAGE_LENGTH)));
+                System.out.println(stdoutMessage);
                 errors.add(log);
+                globalErrorsCount++;
                 break;
             case FATAL:
-                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_MESSAGE_LENGTH)));
+                System.out.println(stdoutMessage);
                 fatalErrors.add(log);
+                globalFatalErrorsCount++;
                 break;
             default:
-                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_MESSAGE_LENGTH)));
-                break;        
+                System.out.println(stdoutMessage);
+                break;
         }
-        
+
     }
-    
+
     private String subString(String s, int maxChars) {
         return s.substring(0, Math.min(s.length(), maxChars));
     }
 
-    
-    
 }

@@ -73,7 +73,8 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 else{
                     DocProcessLogger.getInstance().log("BACKEND_URL environment variable not set. Documentation dashboard API won't be used.", Severity.INFO);
                 }
-
+                
+                //clear error logs, as this postprocessor could be applied on other documents
                 mlogger.resetErrorLogs();       
                 
             } catch (FailedErrorReportException ex) {
@@ -154,6 +155,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 docBuildProcessErrorsDescription.setdocName(docFileName);
                 docBuildProcessErrorsDescription.setErrors(logger.getErrors());
                 docBuildProcessErrorsDescription.setFatalErrors(logger.getFatalErrors());
+                docBuildProcessErrorsDescription.setFailedQualityGates(logger.getFailedQualityGates());
 
                 String jsonObject;
                 try {
@@ -180,6 +182,16 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
         List<String> errors;
 
         List<String> fatalErrors;
+        
+        List<String> failedQualityGates;
+
+        public List<String> getFailedQualityGates() {
+            return failedQualityGates;
+        }
+
+        public void setFailedQualityGates(List<String> failedQualityGates) {
+            this.failedQualityGates = failedQualityGates;
+        }
 
         public String getDate() {
             return date;
