@@ -14,7 +14,7 @@ import org.asciidoctor.extension.InlineMacroProcessor;
  *
  * @author hcadavid
  */
-public class DocumentCrossRef extends InlineMacroProcessor {
+public class DocumentCrossRefMacroProcessor extends InlineMacroProcessor {
 
     private final static Set<String> referencesSet = new LinkedHashSet<>();
     

@@ -135,7 +135,8 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
             "DEPLOYMENT_URL",
             "SOURCE_URL",
             "COMMIT_AUTHOR",
-            "CREATION_DATE"
+            "CREATION_DATE",
+            "COMMIT_TAG"
         };
 
         Map<String, String> cicdEnvProperties = new HashMap<>();
