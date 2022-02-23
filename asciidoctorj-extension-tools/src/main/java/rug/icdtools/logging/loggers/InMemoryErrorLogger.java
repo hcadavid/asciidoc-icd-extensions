@@ -32,7 +32,8 @@ public class InMemoryErrorLogger implements AbstractLogger{
     //use other intermediate persistence approaches (for potentially larger logs)
     private static final List<String> errors = new LinkedList<>();
     private static final List<String> fatalErrors = new LinkedList<>();
-    private static final int STDOUD_MAX_LINES = 300;
+    private static final int STDOUD_MAX_MESSAGE_LENGTH = 300;
+    private static int failedQualityGatesCount = 0;
     
     
     public List<String> getErrors() {
@@ -56,15 +57,15 @@ public class InMemoryErrorLogger implements AbstractLogger{
         switch (severity) {
             case ERROR:
                 
-                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_LINES)));
+                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_MESSAGE_LENGTH)));
                 errors.add(log);
                 break;
             case FATAL:
-                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_LINES)));
+                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_MESSAGE_LENGTH)));
                 fatalErrors.add(log);
                 break;
             default:
-                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_LINES)));
+                System.out.println(String.format("*[%s] - %s... (full details in log files)", severity, subString(log, STDOUD_MAX_MESSAGE_LENGTH)));
                 break;        
         }
         

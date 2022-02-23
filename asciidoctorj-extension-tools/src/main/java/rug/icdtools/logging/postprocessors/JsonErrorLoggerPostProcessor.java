@@ -66,7 +66,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
 
                 //If BACKEND_URL system property is defined, also dump the error details there
                 String backendURL = System.getProperty("BACKEND_URL");
-                if (backendURL != null) {
+                if (backendURL != null && !backendURL.trim().equals("")) {
                     DocProcessLogger.getInstance().log("Posting "+docFileName+" at"+backendURL, Severity.INFO);
                     postToAPI(mlogger, docFileName, backendURL);
                 }
