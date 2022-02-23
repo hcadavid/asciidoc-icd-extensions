@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -107,7 +108,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
 
-            BuildProcessOutputDescription docBuildProcessErrorsDescription = new BuildProcessOutputDescription();
+            PipelineFailureDetails docBuildProcessErrorsDescription = new PipelineFailureDetails();
             docBuildProcessErrorsDescription.setDate(dtf.format(now));
             docBuildProcessErrorsDescription.setdocName(docFileName);
             docBuildProcessErrorsDescription.setErrors(logger.getErrors());
@@ -150,17 +151,17 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
 
-                BuildProcessOutputDescription docBuildProcessErrorsDescription = new BuildProcessOutputDescription();
-                docBuildProcessErrorsDescription.setDate(dtf.format(now));
-                docBuildProcessErrorsDescription.setdocName(docFileName);
-                docBuildProcessErrorsDescription.setErrors(logger.getErrors());
-                docBuildProcessErrorsDescription.setFatalErrors(logger.getFatalErrors());
-                docBuildProcessErrorsDescription.setFailedQualityGates(logger.getFailedQualityGates());
+                PipelineFailureDetails docBuildingFailureDetails = new PipelineFailureDetails();
+                docBuildingFailureDetails.setDate(dtf.format(now));
+                docBuildingFailureDetails.setdocName(docFileName);
+                docBuildingFailureDetails.setErrors(logger.getErrors());
+                docBuildingFailureDetails.setFatalErrors(logger.getFatalErrors());
+                docBuildingFailureDetails.setFailedQualityGates(logger.getFailedQualityGates());
 
                 String jsonObject;
                 try {
                     //Posting to https://[apiurl]/v1/icds/{icdid}/{pipelineid}/errors")
-                    jsonObject = mapper.writeValueAsString(docBuildProcessErrorsDescription);
+                    jsonObject = mapper.writeValueAsString(docBuildingFailureDetails);
                     DashboardAPIClient apiClient = new DashboardAPIClient(credentials,backendURL);
                     apiClient.postResource("/v1/icds/" + icdId + "/" + pipelineId + "/errors", jsonObject);
 
@@ -173,7 +174,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
         
     }
 
-    private class BuildProcessOutputDescription {
+    private class PipelineFailureDetails implements Serializable{
 
         String date;
 
