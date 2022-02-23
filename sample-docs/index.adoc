@@ -8,17 +8,22 @@ This is a minimalist example of an ICD for a theoretical rover, generated follow
 
 == Reference documents
 
+references::default[]
+
 == Glossary
 
 glossary::default[]
 
 == System overview
 
+Another ref to docref:docname2[version=v2.5]
+
 This is a system overview described using text-based diagram specifications that makes easier its maintinance and version control. Here you can use the 'acr' macro (for example, with the acronym acr:AIPS++[]) to automatically include its description on the document's glossary, based on the centralized glossary data source defined for the tool (at the moment the building process is configured with a data-source mock, with only a few acronyms). This will be extended to also include context-based definitions and abbreviations (linked to a proper terminology management systems). 
 
 
 // To be supported soon: (e.g., def:Channel[context=Software] ... abr:ARVI[context=LOFAR]).
 
+Doc docref:anotherdoc[version=v2.9] asdasd
 
 In this document you can make use of the existing Asciidoctor plugins to create text-based diagrams, like the following ditaa diagram and PlantUML diagrams:
 
