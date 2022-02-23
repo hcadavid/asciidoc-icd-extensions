@@ -55,7 +55,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
     @Override
     public String process(Document dcmnt, String output) {
 
-        //This post-processor if used onlt if BACKEND_URL variable (dashboard API URL) is defined
+        //This post-processor is used only if BACKEND_URL variable (dashboard API URL) is defined
         String backendURL = System.getProperty("BACKEND_URL");
         if (backendURL != null && !backendURL.trim().equals("")) {
             try {

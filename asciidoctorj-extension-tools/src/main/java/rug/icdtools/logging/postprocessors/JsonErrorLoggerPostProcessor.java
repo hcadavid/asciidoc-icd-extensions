@@ -137,6 +137,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
             String credentials = System.getProperty("BACKEND_CREDENTIALS"); 
             String pipelineId = System.getProperty("PIPELINE_ID");
             String icdId = System.getProperty("PROJECT_NAME");
+            String versionTag = System.getProperty("COMMIT_TAG");
 
            
             if (credentials==null){
@@ -160,10 +161,11 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
 
                 String jsonObject;
                 try {
-                    //Posting to https://[apiurl]/v1/icds/{icdid}/{pipelineid}/errors")
+                    //Posting to https://[apiurl]/v1/icds/{icdid}/{version}/{pipelineid}/errors")
                     jsonObject = mapper.writeValueAsString(docBuildingFailureDetails);
                     DashboardAPIClient apiClient = new DashboardAPIClient(credentials,backendURL);
-                    apiClient.postResource("/v1/icds/" + icdId + "/" + pipelineId + "/errors", jsonObject);
+                    String urlPath = String.format("/v1/icds/%s/%s/%s/errors",icdId,versionTag,pipelineId);
+                    apiClient.postResource(urlPath, jsonObject);
 
                 } catch (JsonProcessingException | APIAccessException ex) {
                     throw new FailedErrorReportException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);
