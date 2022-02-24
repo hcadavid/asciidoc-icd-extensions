@@ -11,6 +11,8 @@ USER root
 #COPY --from=node /usr/local/include /usr/local/include
 #COPY --from=node /usr/local/bin /usr/local/bin
 
+RUN apk add git
+
 # Regular dependencies installation approach (doesn't work for netlify-cli)
 RUN apk add --update nodejs nodejs-npm
 #ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
