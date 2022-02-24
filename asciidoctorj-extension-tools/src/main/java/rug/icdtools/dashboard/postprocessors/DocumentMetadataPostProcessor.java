@@ -17,15 +17,14 @@
  */
 package rug.icdtools.dashboard.postprocessors;
 
+import rug.icdtools.dashboard.postprocessors.model.PublishedICDMetadata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -170,36 +169,3 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
 
 }
 
-class PublishedICDMetadata implements Serializable {
-
-    private Map<String, String> metadata;
-
-    private List<String> referencedDocs;
-
-    private List<String> warnings;
-
-    public List<String> getReferencedDocs() {
-        return referencedDocs;
-    }
-
-    public void setReferencedDocs(List<String> referencedDocs) {
-        this.referencedDocs = referencedDocs;
-    }
-
-    public List<String> getWarnings() {
-        return warnings;
-    }
-
-    public void setWarnings(List<String> warnings) {
-        this.warnings = warnings;
-    }
-
-    public Map<String, String> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, String> metadata) {
-        this.metadata = metadata;
-    }
-
-}

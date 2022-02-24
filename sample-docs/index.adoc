@@ -25,6 +25,13 @@ This is a system overview described using text-based diagram specifications that
 
 Doc docref:anotherdoc[version=v2.9] asdasd
 
+Doc docref:documentw[version=v2.9] asdasd
+
+Doc docref:ifcmas[version=v2.2] asdasd
+
+Ref to previously mentioned doc Doc docref:anotherdoc[version=v2.9] asdasd
+
+
 In this document you can make use of the existing Asciidoctor plugins to create text-based diagrams, like the following ditaa diagram and PlantUML diagrams:
 
 [ditaa]

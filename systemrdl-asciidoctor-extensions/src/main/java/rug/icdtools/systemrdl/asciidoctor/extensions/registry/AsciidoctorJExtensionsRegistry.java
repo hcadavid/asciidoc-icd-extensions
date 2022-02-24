@@ -7,7 +7,7 @@ package rug.icdtools.systemrdl.asciidoctor.extensions.registry;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.extension.JavaExtensionRegistry;
 import org.asciidoctor.jruby.extension.spi.ExtensionRegistry;
-import rug.icdtools.systemrdl.asciidoctor.extensions.crossrefs.DocumentCrossRefMacroProcessor;
+import rug.icdtools.systemrdl.asciidoctor.extensions.crossrefs.InternalDocumentCrossRefInlineMacroProcessor;
 import rug.icdtools.systemrdl.asciidoctor.extensions.crossrefs.ReferencesPlacementBlockProcessor;
 import rug.icdtools.systemrdl.asciidoctor.extensions.crossrefs.ReferencesPostProcessor;
 import rug.icdtools.systemrdl.asciidoctor.extensions.sysrdl.SystemRDLBlockMacroProcessor;
@@ -19,8 +19,10 @@ import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.GlossaryPostProc
 /**
  *
  * @author hcadavid
+ * Refactoring warning: this class name is referenced from Asciidoctor configuration
+ * files in META-INF/services
  */
-public class SystemRDLExtensionRegistry implements ExtensionRegistry {
+public class AsciidoctorJExtensionsRegistry implements ExtensionRegistry {
 
     @Override
     public void register(Asciidoctor asciidoctor) {
@@ -32,7 +34,7 @@ public class SystemRDLExtensionRegistry implements ExtensionRegistry {
         javaExtensionRegistry.blockMacro("glossary", GlossaryPlacementBlockProcessor.class);
         javaExtensionRegistry.postprocessor(GlossaryPostProcessor.class);
         
-        javaExtensionRegistry.inlineMacro("docref", DocumentCrossRefMacroProcessor.class);
+        javaExtensionRegistry.inlineMacro("docref", InternalDocumentCrossRefInlineMacroProcessor.class);
         javaExtensionRegistry.blockMacro("references",ReferencesPlacementBlockProcessor.class);
         javaExtensionRegistry.postprocessor(ReferencesPostProcessor.class);
         

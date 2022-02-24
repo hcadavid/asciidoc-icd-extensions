@@ -5,9 +5,9 @@
 package rug.icdtools.systemrdl.asciidoctor.extensions.crossrefs;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.asciidoctor.ast.ContentNode;
 import org.asciidoctor.ast.PhraseNode;
 import org.asciidoctor.extension.InlineMacroProcessor;
@@ -18,42 +18,50 @@ import rug.icdtools.logging.Severity;
  *
  * @author hcadavid
  */
-public class DocumentCrossRefMacroProcessor extends InlineMacroProcessor {
+public class InternalDocumentCrossRefInlineMacroProcessor extends InlineMacroProcessor {
 
 
-    private final static Map<String,String> refToDocNameMap=new HashMap<>();
+    private static final Map<DocumentVersion,String> docNameToRefLabel=new HashMap<>();
+    private static final List<DocumentVersion> refDetailsOrderedList = new LinkedList<>();
 
+    
     public static void resetReferencesMap(){
-        refToDocNameMap.clear();
+        docNameToRefLabel.clear();
     }
     
-    public static Map<String, String> getRefToDocNameMap() {
-        return refToDocNameMap;
+    public static Map<DocumentVersion, String> getDocNameToRefLabelMap() {
+        return docNameToRefLabel;
     }
-    
-    
+    public static List<DocumentVersion> getRefDetailsOrderedList() {
+        return refDetailsOrderedList;
+    }
+
     
     @Override
     public Object process(ContentNode contentNode, String docName, Map<String, Object> attributes) {
 
         
-        
-        String referencedDocumentURL;
-        String inlineText;
+        String versionTag=(String)attributes.get("version");       
+
         DocProcessLogger.getInstance().log(">>>>Adding/formatting external ref:"+docName, Severity.DEBUG);
+        
         if (docName != null && !docName.isEmpty()) {
             
-            //pull data, store in map
-            String docRefLabel = "(REF"+(refToDocNameMap.size()+1)+")";
-            refToDocNameMap.put(docRefLabel, docName);
+            DocumentVersion docKey =new DocumentVersion(docName, versionTag);                    
             
-            referencedDocumentURL = "https://thedoc.gitlab.com/" + docName+"/"+attributes.get("version");                        
+            String docRefLabel = docNameToRefLabel.get(docKey);                       
+                        
+            if (docRefLabel==null){
+                docRefLabel = "(REF"+(docNameToRefLabel.size()+1)+")";
+                docNameToRefLabel.put(docKey, docRefLabel);
+                refDetailsOrderedList.add(docKey);
+            }                                                                      
 
             // Define options for an 'anchor' element:
             Map<String, Object> options = new HashMap<>();
             options.put("type", ":link");
-            options.put("target", referencedDocumentURL);
-
+            options.put("target", "#"+docKey.toString());            
+            
             // Create the 'anchor' node:
             PhraseNode inlineRefDocLink = createPhraseNode(contentNode, "anchor", docRefLabel, attributes, options);
             return inlineRefDocLink.convert();
@@ -65,3 +73,4 @@ public class DocumentCrossRefMacroProcessor extends InlineMacroProcessor {
     }
     
 }
+
