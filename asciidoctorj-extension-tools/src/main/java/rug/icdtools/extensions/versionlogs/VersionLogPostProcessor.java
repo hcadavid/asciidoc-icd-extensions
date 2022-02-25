@@ -20,7 +20,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import rug.icdtools.core.logging.DocProcessLogger;
 import rug.icdtools.core.logging.Severity;
-import rug.icdtools.extensions.versionlogs.model.VersionTagEntry;
+import rug.icdtools.core.models.VersionTagEntry;
 
 /**
  *

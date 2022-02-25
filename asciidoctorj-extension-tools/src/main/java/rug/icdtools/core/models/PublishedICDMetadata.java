@@ -15,25 +15,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package rug.icdtools.extensions.dashboard.postprocessors.model;
+package rug.icdtools.core.models;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PublishedICDMetadata implements Serializable {
 
     private Map<String, String> metadata;
 
-    private List<String> referencedDocs;
+    private Set<DocumentVersion> referencedDocs;
 
     private List<String> warnings;
 
-    public List<String> getReferencedDocs() {
+    public Set<DocumentVersion> getReferencedDocs() {
         return referencedDocs;
     }
 
-    public void setReferencedDocs(List<String> referencedDocs) {
+    public void setReferencedDocs(Set<DocumentVersion> referencedDocs) {
         this.referencedDocs = referencedDocs;
     }
 

@@ -4,10 +4,13 @@
  */
 package rug.icdtools.extensions.crossrefs;
 
+import rug.icdtools.core.models.DocumentVersion;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.asciidoctor.ast.ContentNode;
 import org.asciidoctor.ast.PhraseNode;
 import org.asciidoctor.extension.InlineMacroProcessor;
@@ -21,12 +24,17 @@ import rug.icdtools.core.logging.Severity;
 public class InternalDocumentCrossRefInlineMacroProcessor extends InlineMacroProcessor {
 
 
+    private static final Set<DocumentVersion> overallReferencedDocuments = new LinkedHashSet<>();
     private static final Map<DocumentVersion,String> docNameToRefLabel=new HashMap<>();
     private static final List<DocumentVersion> refDetailsOrderedList = new LinkedList<>();
 
+    public static Set<DocumentVersion> getOverallReferencedDocuments() {
+        return overallReferencedDocuments;
+    }
     
-    public static void resetReferencesMap(){
+    public static void resetDocumentReferences(){
         docNameToRefLabel.clear();
+        refDetailsOrderedList.clear();
     }
     
     public static Map<DocumentVersion, String> getDocNameToRefLabelMap() {
@@ -55,6 +63,7 @@ public class InternalDocumentCrossRefInlineMacroProcessor extends InlineMacroPro
                 docRefLabel = "(REF"+(docNameToRefLabel.size()+1)+")";
                 docNameToRefLabel.put(docKey, docRefLabel);
                 refDetailsOrderedList.add(docKey);
+                overallReferencedDocuments.add(docKey);
             }                                                                      
 
             // Define options for an 'anchor' element:

@@ -17,7 +17,7 @@
  */
 package rug.icdtools.extensions.dashboard.postprocessors;
 
-import rug.icdtools.extensions.dashboard.postprocessors.model.PublishedICDMetadata;
+import rug.icdtools.core.models.PublishedICDMetadata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -99,11 +99,11 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
                 Logger.getLogger(DocumentMetadataPostProcessor.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
                 visitingFirstDocument = false;
-                DocProcessLogger.getInstance().log("Documents to be visited before executing the post-processor:" + notVisited.size(), Severity.INFO);
+                DocProcessLogger.getInstance().log("Documents to be visited before executing the post-processor:" + notVisited.size(), Severity.DEBUG);
             }
         }
         boolean currentDocVisited = notVisited.remove(currentFilePath);
-        DocProcessLogger.getInstance().log("Removing from documents to be visited :" + currentFilePath + ":" + currentDocVisited, Severity.INFO);
+        DocProcessLogger.getInstance().log("Removing from documents to be visited :" + currentFilePath + ":" + currentDocVisited, Severity.DEBUG);
 
         //True if this is the last document of the building process
         if (notVisited.isEmpty()) {

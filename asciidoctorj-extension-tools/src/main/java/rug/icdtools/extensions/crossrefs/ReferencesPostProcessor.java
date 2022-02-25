@@ -4,6 +4,7 @@
  */
 package rug.icdtools.extensions.crossrefs;
 
+import rug.icdtools.core.models.DocumentVersion;
 import java.util.List;
 import java.util.Map;
 import org.asciidoctor.ast.Document;
@@ -63,7 +64,7 @@ public class ReferencesPostProcessor extends Postprocessor {
 
         //Reset references map so existing ones are not included
         //on other documents processed during the build process.
-        InternalDocumentCrossRefInlineMacroProcessor.resetReferencesMap();
+        InternalDocumentCrossRefInlineMacroProcessor.resetDocumentReferences();
         
         return doc.html().replace("&lt;", "<").replace("&gt;", ">");
 

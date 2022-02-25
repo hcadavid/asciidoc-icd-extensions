@@ -5,7 +5,6 @@
 package rug.icdtools.extensions.glossaries.sources;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
 /**
  *
