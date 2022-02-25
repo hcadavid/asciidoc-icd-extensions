@@ -42,7 +42,7 @@ public class ReferencesPostProcessor extends Postprocessor {
         Map<DocumentVersion,String> docRefLabels = InternalDocumentCrossRefInlineMacroProcessor.getDocNameToRefLabelMap();
         List<DocumentVersion> orderedRefDocs = InternalDocumentCrossRefInlineMacroProcessor.getRefDetailsOrderedList();
         
-        DocProcessLogger.getInstance().log("Generating references table with "+docRefLabels.size()+" terms.", Severity.DEBUG);
+        DocProcessLogger.getInstance().log("Generating references table with "+docRefLabels.size()+" terms.", Severity.INFO);
                                 
         for (DocumentVersion refEntry:orderedRefDocs){
 

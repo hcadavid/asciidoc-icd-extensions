@@ -4,7 +4,9 @@ This is a minimalist example of an ICD for a theoretical rover, generated follow
 
 == Purpose
 
-== Status
+== Versions history
+
+tagshistory::default[]
 
 == Reference documents
 

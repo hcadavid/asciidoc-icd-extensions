@@ -30,6 +30,8 @@ import rug.icdtools.extensions.glossaries.AcronymInlineMacroProcessor;
 import rug.icdtools.extensions.glossaries.GlossaryPlacementBlockProcessor;
 import rug.icdtools.extensions.glossaries.GlossaryPostProcessor;
 import rug.icdtools.core.logging.postprocessors.JsonErrorLoggerPostProcessor;
+import rug.icdtools.extensions.versionlogs.VersionLogPlacementBlockProcessor;
+import rug.icdtools.extensions.versionlogs.VersionLogPostProcessor;
 
 /**
  *
@@ -53,6 +55,10 @@ public class ExtensionToolsRegistry implements ExtensionRegistry {
         javaExtensionRegistry.inlineMacro("docref", InternalDocumentCrossRefInlineMacroProcessor.class);
         javaExtensionRegistry.blockMacro("references",ReferencesPlacementBlockProcessor.class);
         javaExtensionRegistry.postprocessor(ReferencesPostProcessor.class);
+        
+        javaExtensionRegistry.blockMacro("tagshistory",VersionLogPlacementBlockProcessor.class);
+        javaExtensionRegistry.postprocessor(VersionLogPostProcessor.class);
+        
         
     }
 
