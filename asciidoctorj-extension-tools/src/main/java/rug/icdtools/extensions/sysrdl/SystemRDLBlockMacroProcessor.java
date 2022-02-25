@@ -15,10 +15,10 @@ import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockMacroProcessor;
-import rug.icdtools.interfacing.externaltools.CommandExecutionException;
-import rug.icdtools.interfacing.externaltools.CommandGeneratedException;
-import rug.icdtools.logging.DocProcessLogger;
-import rug.icdtools.logging.Severity;
+import rug.icdtools.interfacing.localcommands.CommandExecutionException;
+import rug.icdtools.interfacing.localcommands.CommandGeneratedException;
+import rug.icdtools.core.logging.DocProcessLogger;
+import rug.icdtools.core.logging.Severity;
 
 /**
  * MacroProcessor for systemrdl::rdlfilename[]

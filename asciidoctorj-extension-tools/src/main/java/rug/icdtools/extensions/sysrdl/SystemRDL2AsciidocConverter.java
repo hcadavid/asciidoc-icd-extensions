@@ -15,9 +15,9 @@ import java.util.Scanner;
 
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BaseProcessor;
-import rug.icdtools.interfacing.externaltools.CommandExecutionException;
-import rug.icdtools.interfacing.externaltools.CommandGeneratedException;
-import rug.icdtools.interfacing.externaltools.CommandRunner;
+import rug.icdtools.interfacing.localcommands.CommandExecutionException;
+import rug.icdtools.interfacing.localcommands.CommandGeneratedException;
+import rug.icdtools.interfacing.localcommands.CommandRunner;
 
 /**
  *

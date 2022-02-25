@@ -20,16 +20,16 @@ package rug.icdtools.registry;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.extension.JavaExtensionRegistry;
 import org.asciidoctor.jruby.extension.spi.ExtensionRegistry;
-import rug.icdtools.crossrefs.InternalDocumentCrossRefInlineMacroProcessor;
-import rug.icdtools.crossrefs.ReferencesPlacementBlockProcessor;
-import rug.icdtools.crossrefs.ReferencesPostProcessor;
-import rug.icdtools.dashboard.postprocessors.DocumentMetadataPostProcessor;
+import rug.icdtools.extensions.crossrefs.InternalDocumentCrossRefInlineMacroProcessor;
+import rug.icdtools.extensions.crossrefs.ReferencesPlacementBlockProcessor;
+import rug.icdtools.extensions.crossrefs.ReferencesPostProcessor;
+import rug.icdtools.extensions.dashboard.postprocessors.DocumentMetadataPostProcessor;
 import rug.icdtools.extensions.sysrdl.SystemRDLBlockMacroProcessor;
 import rug.icdtools.extensions.sysrdl.SystemRDLBlockProcessor;
-import rug.icdtools.glossaries.AcronymInlineMacroProcessor;
-import rug.icdtools.glossaries.GlossaryPlacementBlockProcessor;
-import rug.icdtools.glossaries.GlossaryPostProcessor;
-import rug.icdtools.logging.postprocessors.JsonErrorLoggerPostProcessor;
+import rug.icdtools.extensions.glossaries.AcronymInlineMacroProcessor;
+import rug.icdtools.extensions.glossaries.GlossaryPlacementBlockProcessor;
+import rug.icdtools.extensions.glossaries.GlossaryPostProcessor;
+import rug.icdtools.core.logging.postprocessors.JsonErrorLoggerPostProcessor;
 
 /**
  *
