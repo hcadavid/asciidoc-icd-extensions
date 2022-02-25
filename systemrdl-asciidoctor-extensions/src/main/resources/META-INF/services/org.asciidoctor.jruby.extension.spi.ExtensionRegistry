@@ -1,2 +1,0 @@
-# File: src/main/resources/META-INF/services/org.asciidoctor.jruby.extension.spi.ExtensionRegistry
-rug.icdtools.systemrdl.asciidoctor.extensions.registry.AsciidoctorJExtensionsRegistry

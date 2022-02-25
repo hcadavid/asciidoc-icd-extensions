@@ -20,7 +20,15 @@ package rug.icdtools.registry;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.extension.JavaExtensionRegistry;
 import org.asciidoctor.jruby.extension.spi.ExtensionRegistry;
+import rug.icdtools.crossrefs.InternalDocumentCrossRefInlineMacroProcessor;
+import rug.icdtools.crossrefs.ReferencesPlacementBlockProcessor;
+import rug.icdtools.crossrefs.ReferencesPostProcessor;
 import rug.icdtools.dashboard.postprocessors.DocumentMetadataPostProcessor;
+import rug.icdtools.extensions.sysrdl.SystemRDLBlockMacroProcessor;
+import rug.icdtools.extensions.sysrdl.SystemRDLBlockProcessor;
+import rug.icdtools.glossaries.AcronymInlineMacroProcessor;
+import rug.icdtools.glossaries.GlossaryPlacementBlockProcessor;
+import rug.icdtools.glossaries.GlossaryPostProcessor;
 import rug.icdtools.logging.postprocessors.JsonErrorLoggerPostProcessor;
 
 /**
@@ -34,6 +42,18 @@ public class ExtensionToolsRegistry implements ExtensionRegistry {
         JavaExtensionRegistry javaExtensionRegistry = asciidoctor.javaExtensionRegistry();        
         javaExtensionRegistry.postprocessor(JsonErrorLoggerPostProcessor.class);
         javaExtensionRegistry.postprocessor(DocumentMetadataPostProcessor.class);
+        
+        javaExtensionRegistry.blockMacro("systemrdl", SystemRDLBlockMacroProcessor.class);
+        javaExtensionRegistry.block("systemrdl", SystemRDLBlockProcessor.class);        
+        
+        javaExtensionRegistry.inlineMacro("acr", AcronymInlineMacroProcessor.class);        
+        javaExtensionRegistry.blockMacro("glossary", GlossaryPlacementBlockProcessor.class);
+        javaExtensionRegistry.postprocessor(GlossaryPostProcessor.class);
+        
+        javaExtensionRegistry.inlineMacro("docref", InternalDocumentCrossRefInlineMacroProcessor.class);
+        javaExtensionRegistry.blockMacro("references",ReferencesPlacementBlockProcessor.class);
+        javaExtensionRegistry.postprocessor(ReferencesPostProcessor.class);
+        
     }
 
 }

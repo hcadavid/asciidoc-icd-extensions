@@ -11,7 +11,6 @@
     <modules>
         <module>asciidoctorj-extension-tools</module>
         <module>asciidoctor-icd-builder</module>
-        <module>systemrdl-asciidoctor-extensions</module>
     </modules>
 
     <build>

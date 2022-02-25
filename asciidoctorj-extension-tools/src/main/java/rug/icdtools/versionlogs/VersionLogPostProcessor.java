@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package rug.icdtools.systemrdl.asciidoctor.extensions.glossaries;
+package rug.icdtools.versionlogs;
 
+import rug.icdtools.glossaries.AcronymInlineMacroProcessor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,13 +15,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import rug.icdtools.logging.DocProcessLogger;
 import rug.icdtools.logging.Severity;
-import rug.icdtools.systemrdl.asciidoctor.extensions.glossaries.sources.GlossaryDataSourceFactory;
+import rug.icdtools.glossaries.sources.GlossaryDataSourceFactory;
 
 /**
  *
  * @author hcadavid
  */
-public class GlossaryPostProcessor extends Postprocessor {
+public class VersionLogPostProcessor extends Postprocessor {
 
     
     private static final String COL_GROUP = "<colgroup> <col style=\"width: 20%;\"> <col style=\"width: 80%;\"></colgroup>";
@@ -32,11 +33,15 @@ public class GlossaryPostProcessor extends Postprocessor {
     
     @Override
     public String process(Document dcmnt, String output) {
-               
-        
+
+       // ObjectMapper
+       // JSONPar
+       // if (System.getProperty("LOGTABS")){
+            
+        //}
         org.jsoup.nodes.Document doc = Jsoup.parse(output, "UTF-8");
 
-        Element glossaryPlaceholder = doc.getElementById(GlossaryPlacementBlockProcessor.GLOSSARY_PLACEMENT_ID);
+        Element glossaryPlaceholder = doc.getElementById(VersionLogPlacementBlockProcessor.VERSION_LOG_PLACEMENT_ID);
 
         StringBuilder sb = new StringBuilder();
         sb.append(COL_GROUP);

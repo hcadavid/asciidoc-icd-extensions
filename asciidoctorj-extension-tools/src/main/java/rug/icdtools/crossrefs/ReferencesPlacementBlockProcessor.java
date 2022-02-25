@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package rug.icdtools.systemrdl.asciidoctor.extensions.crossrefs;
+package rug.icdtools.crossrefs;
 
 import java.util.Map;
 import org.asciidoctor.ast.StructuralNode;
