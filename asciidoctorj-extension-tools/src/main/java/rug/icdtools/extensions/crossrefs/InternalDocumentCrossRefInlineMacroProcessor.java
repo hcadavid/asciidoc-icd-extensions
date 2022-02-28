@@ -4,7 +4,7 @@
  */
 package rug.icdtools.extensions.crossrefs;
 
-import rug.icdtools.core.models.DocumentVersion;
+import rug.icdtools.core.models.VersionedDocument;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -24,11 +24,11 @@ import rug.icdtools.core.logging.Severity;
 public class InternalDocumentCrossRefInlineMacroProcessor extends InlineMacroProcessor {
 
 
-    private static final Set<DocumentVersion> overallReferencedDocuments = new LinkedHashSet<>();
-    private static final Map<DocumentVersion,String> docNameToRefLabel=new HashMap<>();
-    private static final List<DocumentVersion> refDetailsOrderedList = new LinkedList<>();
+    private static final Set<VersionedDocument> overallReferencedDocuments = new LinkedHashSet<>();
+    private static final Map<VersionedDocument,String> docNameToRefLabel=new HashMap<>();
+    private static final List<VersionedDocument> refDetailsOrderedList = new LinkedList<>();
 
-    public static Set<DocumentVersion> getOverallReferencedDocuments() {
+    public static Set<VersionedDocument> getOverallReferencedDocuments() {
         return overallReferencedDocuments;
     }
     
@@ -37,10 +37,10 @@ public class InternalDocumentCrossRefInlineMacroProcessor extends InlineMacroPro
         refDetailsOrderedList.clear();
     }
     
-    public static Map<DocumentVersion, String> getDocNameToRefLabelMap() {
+    public static Map<VersionedDocument, String> getDocNameToRefLabelMap() {
         return docNameToRefLabel;
     }
-    public static List<DocumentVersion> getRefDetailsOrderedList() {
+    public static List<VersionedDocument> getRefDetailsOrderedList() {
         return refDetailsOrderedList;
     }
 
@@ -55,7 +55,7 @@ public class InternalDocumentCrossRefInlineMacroProcessor extends InlineMacroPro
         
         if (docName != null && !docName.isEmpty()) {
             
-            DocumentVersion docKey =new DocumentVersion(docName, versionTag);                    
+            VersionedDocument docKey =new VersionedDocument(docName, versionTag);                    
             
             String docRefLabel = docNameToRefLabel.get(docKey);                       
                         

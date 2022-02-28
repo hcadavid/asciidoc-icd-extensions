@@ -6,13 +6,13 @@ package rug.icdtools.core.models;
 
 import java.util.Objects;
 
-public class DocumentVersion{
+public class VersionedDocument{
     
     private final String docName;
     
     private final String versionTag;
     
-    public DocumentVersion(String docName, String versionTag) {
+    public VersionedDocument(String docName, String versionTag) {
         this.docName = docName;
         this.versionTag = versionTag;
     }
@@ -37,7 +37,7 @@ public class DocumentVersion{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DocumentVersion other = (DocumentVersion) obj;
+        final VersionedDocument other = (VersionedDocument) obj;
         if (!Objects.equals(this.docName, other.docName)) {
             return false;
         }

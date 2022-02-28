@@ -4,7 +4,7 @@
  */
 package rug.icdtools.extensions.crossrefs;
 
-import rug.icdtools.core.models.DocumentVersion;
+import rug.icdtools.core.models.VersionedDocument;
 import java.util.List;
 import java.util.Map;
 import org.asciidoctor.ast.Document;
@@ -40,12 +40,12 @@ public class ReferencesPostProcessor extends Postprocessor {
         sb.append(String.format(TABLE_HEADER, "Reference", "Document name","Version", "Description"));
         sb.append(TAB_BODY_OPEN);
        
-        Map<DocumentVersion,String> docRefLabels = InternalDocumentCrossRefInlineMacroProcessor.getDocNameToRefLabelMap();
-        List<DocumentVersion> orderedRefDocs = InternalDocumentCrossRefInlineMacroProcessor.getRefDetailsOrderedList();
+        Map<VersionedDocument,String> docRefLabels = InternalDocumentCrossRefInlineMacroProcessor.getDocNameToRefLabelMap();
+        List<VersionedDocument> orderedRefDocs = InternalDocumentCrossRefInlineMacroProcessor.getRefDetailsOrderedList();
         
         DocProcessLogger.getInstance().log("Generating references table with "+docRefLabels.size()+" terms.", Severity.INFO);
                                 
-        for (DocumentVersion refEntry:orderedRefDocs){
+        for (VersionedDocument refEntry:orderedRefDocs){
 
             String docURL = "http://doc.com/"+refEntry.getDocName()+"/"+refEntry.getVersionTag();
             

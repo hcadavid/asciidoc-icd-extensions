@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -40,6 +41,8 @@ import rug.icdtools.core.logging.AbstractLogger;
 import rug.icdtools.core.logging.DocProcessLogger;
 import rug.icdtools.core.logging.Severity;
 import rug.icdtools.core.logging.loggers.InMemoryErrorLogger;
+import rug.icdtools.core.models.VersionedDocument;
+import rug.icdtools.extensions.crossrefs.InternalDocumentCrossRefInlineMacroProcessor;
 
 /**
  *
@@ -50,26 +53,35 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
     private static boolean visitingFirstDocument = true;
 
     private static Set<String> notVisited;
+    private static final String DOCUMENT_RESOURCE_URL = "/v1/icds/%s/%s";
 
     @Override
     public String process(Document dcmnt, String output) {
 
         //This post-processor is used only if BACKEND_URL variable (dashboard API URL) is defined
         String backendURL = System.getProperty("BACKEND_URL");
-        if (backendURL != null && !backendURL.trim().equals("")) {
-            try {
-                DocProcessLogger.getInstance().log("BACKEND_URL environment variable set to [" + backendURL + "]", Severity.INFO);
-                postToAPIWhenBuildingFinished(dcmnt, backendURL);
-            } catch (FailedMetadataReportException ex) {
-                //ex.printStackTrace();
-                //If this exception takes place, there are no means to post documentation
-                //metadata to the dashboard API, despite it has been configured to do so.
-                //Therefore, for consistency, it must exit with a non-zero result to make sure build process is
-                //reported as failed (no document is published)
-                DocProcessLogger.getInstance().log("Unable to publish metadata of the published document. Building process must be stopped."+ex.getLocalizedMessage(), Severity.FATAL);
-                System.exit(1);
+        String backendCredentials = System.getProperty("BACKEND_CREDENTIALS");
+        
+        if (backendURL != null && !backendURL.trim().equals("")){
+            if (backendCredentials != null && !backendCredentials.trim().equals("")) {
+                try {
+                    DocProcessLogger.getInstance().log("BACKEND_URL environment variable set to [" + backendURL + "]. BACKEND_CREDENTIALS also set.", Severity.INFO);
+                    postToAPIWhenBuildingFinished(dcmnt, backendURL, backendCredentials);
+                } catch (FailedMetadataReportException ex) {
+                    //ex.printStackTrace();
+                    //If this exception takes place, there are no means to post documentation
+                    //metadata to the dashboard API, despite it has been configured to do so.
+                    //Therefore, for consistency, it must exit with a non-zero result to make sure build process is
+                    //reported as failed (no document is published)
+                    DocProcessLogger.getInstance().log("Unable to publish metadata of the published document. Building process must be stopped." + ex.getLocalizedMessage(), Severity.FATAL);
+                    System.exit(1);
+                }
             }
-        } else {
+            else{
+                DocProcessLogger.getInstance().log("BACKEND_URL environment variable was set, but no BACKEND_CREDENTIALS variable was defined. Building process must be stopped", Severity.FATAL);
+            }
+        }
+        else {
             DocProcessLogger.getInstance().log("BACKEND_URL environment variable not set. Documentation dashboard API won't be used to post published document metadata.", Severity.INFO);
         }
 
@@ -77,7 +89,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
 
     }
 
-    private void postToAPIWhenBuildingFinished(Document dcmnt, String backendURL) throws FailedMetadataReportException {
+    private void postToAPIWhenBuildingFinished(Document dcmnt, String backendURL, String backendCredentials) throws FailedMetadataReportException {
         StructuralNode stdoc = (StructuralNode) dcmnt;
 
         String currentFilePath = Paths.get(stdoc.getSourceLocation().getDir()).resolve(stdoc.getSourceLocation().getFile()).toString();
@@ -114,7 +126,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
                 InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
                 if (mlogger.getGlobalFatalErrorsCount()==0 && mlogger.getGlobalErrorsCount()==0 && mlogger.getGlobalFailedQualityGatesCount()==0) {
                     DocProcessLogger.getInstance().log("Documents built with no internal errors, document building errors, or failed quality gates. Posting metadata to " + backendURL, Severity.INFO);
-                    postToAPI(backendURL);
+                    postToAPI(backendURL,backendCredentials);
                 }
                 else{
                     DocProcessLogger.getInstance().log(String.format("Documents built with %d internal errors, %d document building error, and %d failed quality gates. No metadata will be posted to the API.",mlogger.getGlobalFatalErrorsCount(),mlogger.getGlobalErrorsCount(),mlogger.getGlobalFailedQualityGatesCount()), Severity.INFO);
@@ -125,9 +137,8 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
 
     }
 
-    private void postToAPI(String backendURL) throws FailedMetadataReportException {
+    private void postToAPI(String backendURL, String backendCredentials) throws FailedMetadataReportException {
         String[] envVars = new String[]{
-            "BACKEND_CREDENTIALS",
             "PIPELINE_ID",
             "PROJECT_NAME",
             "PIPELINE_ID",
@@ -152,7 +163,20 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
 
         PublishedICDMetadata icdMetadata = new PublishedICDMetadata();
         icdMetadata.setMetadata(cicdEnvProperties);
-
+               
+        //Collect reference documents data from CrossRef extension        
+        Set<VersionedDocument> referencedDocs = InternalDocumentCrossRefInlineMacroProcessor.getOverallReferencedDocuments();
+        
+        try {
+            //check wether the referenced documents/versions exist
+            Map<VersionedDocument,PublishedICDMetadata> refDocsDetails = checkReferencedDocuments(referencedDocs,backendURL,backendCredentials);
+            
+        } catch (APIAccessException ex) {
+            throw new FailedMetadataReportException("One or more of the documents referenced doesn't exist for the given version in the backend at:" + backendURL + ". "+ex.getLocalizedMessage());
+        }
+        
+        icdMetadata.setReferencedDocs(referencedDocs);
+                
         try {
             //PUT to https://[apiurl]/v1/icds/{icdid}/current")
             String jsonIcdMetadata = mapper.writeValueAsString(icdMetadata);
@@ -166,6 +190,17 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
         }
 
     }
+    
+    public Map<VersionedDocument,PublishedICDMetadata> checkReferencedDocuments(Set<VersionedDocument> referencedDocs, String backendCredentials, String backendUrl) throws APIAccessException{
+        DashboardAPIClient apiClient = new DashboardAPIClient(backendCredentials, backendUrl);
+        Map<VersionedDocument,PublishedICDMetadata> docsDetails = new LinkedHashMap<>();
+        for (VersionedDocument refdoc:referencedDocs){
+            docsDetails.put(refdoc, apiClient.getResource(String.format(DOCUMENT_RESOURCE_URL, refdoc.getDocName(),refdoc.getVersionTag()), PublishedICDMetadata.class));
+        }
+        return docsDetails;
+        
+    }
+    
 
 }
 

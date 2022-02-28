@@ -17,15 +17,20 @@
  */
 package rug.icdtools.extensions.dashboard.interfacing.docsapiclient;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.config.Lookup;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
@@ -127,21 +132,56 @@ public class DashboardAPIClient {
     public void putResource(String resource,String jsonObject) throws APIAccessException{
         try {
 
-            HttpPut putRequest = new HttpPut(baseURL + resource);            
+            HttpPut putRequest = new HttpPut(baseURL + resource);
             putRequest.addHeader("Authorization", authToken);
             putRequest.addHeader("Content-Type", "application/json");
             putRequest.setEntity(new StringEntity(jsonObject));
-            
+
             HttpResponse response = httpClient.execute(putRequest);
-            
-            if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300 ){
-                throw new APIAccessException("Failure while posting resource "+resource+". Object:"+jsonObject+". HTTP Code:"+response.getStatusLine().getStatusCode());
+
+            if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
+                throw new APIAccessException("Failure while posting resource " + resource + ". Object:" + jsonObject + ". HTTP Code:" + response.getStatusLine().getStatusCode());
             }
-                       
-        } catch (JsonProcessingException e ) {
-            throw new APIAccessException("Failure while posting resource "+resource+". Object:"+jsonObject,e);
+
+        } catch (JsonProcessingException e) {
+            throw new APIAccessException("Failure while posting resource " + resource + ". Object:" + jsonObject, e);
         } catch (IOException e) {
-            throw new APIAccessException("Failure while posting resource "+resource+". Object:"+jsonObject,e);
+            throw new APIAccessException("Failure while posting resource " + resource + ". Object:" + jsonObject, e);
+        }
+
+    }
+
+    public <T> T getResource(String resource, Class<T> resourceType) throws APIAccessException {
+        ObjectMapper om = new ObjectMapper();
+        //om.readValue(src, va)
+
+        HttpGet getRequest = new HttpGet(baseURL + resource);
+        getRequest.addHeader("Authorization", authToken);
+        getRequest.addHeader("Content-Type", "application/json");
+
+        HttpResponse response;
+        try {
+            response = httpClient.execute(getRequest);
+            int returnCode = response.getStatusLine().getStatusCode();
+
+            if (returnCode < 200 || returnCode >= 300) {
+                if (returnCode == 404) {
+                    throw new APIAccessException("Resource " + resource + " doesn't exist.");
+                } else {
+                    throw new APIAccessException("Server returned error code "+ returnCode +" when getting resource "+ resource);
+                }
+            } else {
+                T entity = null;
+                try {
+                    entity = om.readValue(response.getEntity().getContent(), resourceType);
+                    return entity;
+                } catch (JsonParseException | JsonMappingException ex) {
+                    throw new APIAccessException("Failure while parsing resource " + resource + ". Object:" + entity, ex);
+                }
+            }
+
+        } catch (IOException ex) {
+            throw new APIAccessException("I/O error when sending a GET request to the server at "+baseURL, ex);
         }
 
     }

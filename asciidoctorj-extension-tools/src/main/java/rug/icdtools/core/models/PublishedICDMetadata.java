@@ -26,15 +26,15 @@ public class PublishedICDMetadata implements Serializable {
 
     private Map<String, String> metadata;
 
-    private Set<DocumentVersion> referencedDocs;
+    private Set<VersionedDocument> referencedDocs;
 
     private List<String> warnings;
 
-    public Set<DocumentVersion> getReferencedDocs() {
+    public Set<VersionedDocument> getReferencedDocs() {
         return referencedDocs;
     }
 
-    public void setReferencedDocs(Set<DocumentVersion> referencedDocs) {
+    public void setReferencedDocs(Set<VersionedDocument> referencedDocs) {
         this.referencedDocs = referencedDocs;
     }
 
