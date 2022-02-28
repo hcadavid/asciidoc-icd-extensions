@@ -24,7 +24,6 @@ This is a system overview described using text-based diagram specifications that
 
 // To be supported soon: (e.g., def:Channel[context=Software] ... abr:ARVI[context=LOFAR]).
 
-Doc docref:document_two[version=v1.1] asdasd
 
 
 In this document you can make use of the existing Asciidoctor plugins to create text-based diagrams, like the following ditaa diagram and PlantUML diagrams:

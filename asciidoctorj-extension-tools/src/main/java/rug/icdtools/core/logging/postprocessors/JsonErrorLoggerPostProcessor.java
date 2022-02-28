@@ -163,7 +163,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 try {
                     //Posting to https://[apiurl]/v1/icds/{icdid}/{version}/{pipelineid}/errors")
                     jsonObject = mapper.writeValueAsString(docBuildingFailureDetails);
-                    DashboardAPIClient apiClient = new DashboardAPIClient(credentials,backendURL);
+                    DashboardAPIClient apiClient = new DashboardAPIClient(backendURL,credentials);
                     String urlPath = String.format("/v1/icds/%s/%s/%s/errors",icdId,versionTag,pipelineId);
                     apiClient.postResource(urlPath, jsonObject);
 

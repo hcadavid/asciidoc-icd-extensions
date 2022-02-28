@@ -50,17 +50,18 @@ public class DashboardAPIClient {
     private CloseableHttpClient httpClient;
     private String baseURL;
 
-    public DashboardAPIClient(String credentials,String baseURL) throws APIAccessException {
+    public DashboardAPIClient(String baseURL,String credentials) throws APIAccessException {
         try {
-            if (!credentials.contains(":")){
-                throw new APIAccessException("Unable to use documentation pipeline API at:"+baseURL+". Wrong credentials format, expected user:password ");
+            if (credentials==null || !credentials.contains(":")){
+                throw new APIAccessException("xxUnable to use documentation pipeline API at:"+baseURL+". Wrong credentials format, expected user:password ");
             }
             this.authToken = "Bearer " + getToken(baseURL,credentials);
             this.baseURL = baseURL;
             this.httpClient = HttpClients.createDefault();
             
         } catch (IOException ex) {
-            throw new APIAccessException("Unable to use documentation pipeline API at:"+baseURL,ex);
+            throw new APIAccessException("yyUnable to use documentation pipeline API at:"+baseURL,ex);
+            
         }
     }
 

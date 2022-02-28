@@ -7,7 +7,7 @@
  * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT ANY WARRANTY; without even the implifed warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
@@ -73,7 +73,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
                     //metadata to the dashboard API, despite it has been configured to do so.
                     //Therefore, for consistency, it must exit with a non-zero result to make sure build process is
                     //reported as failed (no document is published)
-                    DocProcessLogger.getInstance().log("Unable to publish metadata of the published document. Building process must be stopped." + ex.getLocalizedMessage(), Severity.FATAL);
+                    DocProcessLogger.getInstance().log("Unable to publish metadata of the processed document. Building process must be stopped." + ex.getLocalizedMessage(), Severity.FATAL);
                     System.exit(1);
                 }
             }
@@ -172,7 +172,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
             Map<VersionedDocument,PublishedICDMetadata> refDocsDetails = checkReferencedDocuments(referencedDocs,backendURL,backendCredentials);
             
         } catch (APIAccessException ex) {
-            throw new FailedMetadataReportException("One or more of the documents referenced doesn't exist for the given version in the backend at:" + backendURL + ". "+ex.getLocalizedMessage());
+            throw new FailedMetadataReportException("One or more of the documents referenced doesn't exist on the given backend (" + backendURL + ") database: "+ex.getLocalizedMessage());
         }
         
         icdMetadata.setReferencedDocs(referencedDocs);
@@ -180,7 +180,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
         try {
             //PUT to https://[apiurl]/v1/icds/{icdid}/current")
             String jsonIcdMetadata = mapper.writeValueAsString(icdMetadata);
-            DashboardAPIClient apiClient = new DashboardAPIClient(cicdEnvProperties.get("BACKEND_CREDENTIALS"), backendURL);
+            DashboardAPIClient apiClient = new DashboardAPIClient(backendURL,backendCredentials);
             String urlPath = String.format("/v1/icds/%s/current", cicdEnvProperties.get("PROJECT_NAME"));            
             apiClient.putResource(urlPath, jsonIcdMetadata);
             DocProcessLogger.getInstance().log("Metadata posted to " + backendURL+urlPath, Severity.INFO);
@@ -191,8 +191,8 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
 
     }
     
-    public Map<VersionedDocument,PublishedICDMetadata> checkReferencedDocuments(Set<VersionedDocument> referencedDocs, String backendCredentials, String backendUrl) throws APIAccessException{
-        DashboardAPIClient apiClient = new DashboardAPIClient(backendCredentials, backendUrl);
+    public Map<VersionedDocument,PublishedICDMetadata> checkReferencedDocuments(Set<VersionedDocument> referencedDocs, String backendUrl, String backendCredentials) throws APIAccessException{
+        DashboardAPIClient apiClient = new DashboardAPIClient(backendUrl, backendCredentials);
         Map<VersionedDocument,PublishedICDMetadata> docsDetails = new LinkedHashMap<>();
         for (VersionedDocument refdoc:referencedDocs){
             docsDetails.put(refdoc, apiClient.getResource(String.format(DOCUMENT_RESOURCE_URL, refdoc.getDocName(),refdoc.getVersionTag()), PublishedICDMetadata.class));
