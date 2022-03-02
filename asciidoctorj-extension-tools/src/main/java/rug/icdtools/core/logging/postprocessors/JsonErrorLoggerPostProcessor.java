@@ -166,6 +166,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                     DashboardAPIClient apiClient = new DashboardAPIClient(backendURL,credentials);
                     String urlPath = String.format("/v1/icds/%s/%s/%s/errors",icdId,versionTag,pipelineId);
                     apiClient.postResource(urlPath, jsonObject);
+                    DocProcessLogger.getInstance().log("Document errors/failed quality gates posted on "+ backendURL, Severity.INFO);
 
                 } catch (JsonProcessingException | APIAccessException ex) {
                     throw new FailedErrorReportException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);

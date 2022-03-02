@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CI_PROJECT_NAME='document_three' 
+export CI_PROJECT_NAME='document_two' 
 export CI_PIPELINE_ID=11111111
 export CI_PAGES_URL='http://pages.url.com/project_one' 
 export CI_PROJECT_URL='http://project_one.github.com'  

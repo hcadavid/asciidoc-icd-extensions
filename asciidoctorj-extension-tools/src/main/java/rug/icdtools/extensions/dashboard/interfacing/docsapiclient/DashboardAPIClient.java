@@ -53,14 +53,14 @@ public class DashboardAPIClient {
     public DashboardAPIClient(String baseURL,String credentials) throws APIAccessException {
         try {
             if (credentials==null || !credentials.contains(":")){
-                throw new APIAccessException("xxUnable to use documentation pipeline API at:"+baseURL+". Wrong credentials format, expected user:password ");
+                throw new APIAccessException("Unable to use documentation pipeline API at:"+baseURL+". Wrong credentials format, expected user:password ");
             }
             this.authToken = "Bearer " + getToken(baseURL,credentials);
             this.baseURL = baseURL;
             this.httpClient = HttpClients.createDefault();
             
         } catch (IOException ex) {
-            throw new APIAccessException("yyUnable to use documentation pipeline API at:"+baseURL,ex);
+            throw new APIAccessException("Unable to use documentation pipeline API at:"+baseURL+". - "+ex.getLocalizedMessage(),ex);
             
         }
     }
