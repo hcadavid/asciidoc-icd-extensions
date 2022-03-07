@@ -51,7 +51,7 @@ public class InternalDocumentCrossRefInlineMacroProcessor extends InlineMacroPro
         
         String versionTag=(String)attributes.get("version");       
 
-        DocProcessLogger.getInstance().log(">>>>Adding/formatting external ref:"+docName, Severity.DEBUG);
+        DocProcessLogger.getInstance().log("Adding/formatting external reference:"+docName, Severity.DEBUG);
         
         if (docName != null && !docName.isEmpty()) {
             
