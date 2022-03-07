@@ -37,7 +37,7 @@ public class InMemoryErrorLogger implements AbstractLogger {
     private static int globalFailedQualityGatesCount = 0;
     private static int globalFatalErrorsCount = 0;
 
-    private static final int STDOUD_MAX_MESSAGE_LENGTH = 300;
+    private static final int STDOUD_MAX_MESSAGE_LENGTH = 1300;
 
     public int getGlobalFatalErrorsCount() {
         return globalFatalErrorsCount;
