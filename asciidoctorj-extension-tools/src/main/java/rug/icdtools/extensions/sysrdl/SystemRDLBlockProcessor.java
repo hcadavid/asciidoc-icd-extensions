@@ -44,37 +44,42 @@ public class SystemRDLBlockProcessor extends BlockProcessor {
     @Override
     public Object process(StructuralNode parent, Reader reader, Map<String, Object> attributes) {
 
-        try {
-            //create temporal file with the SystemRDL with the inline SystemRDL specification
-            File tmpInput = File.createTempFile("sysrdl2asciidoc", ".rdlsource", null);
+        Object regMapNameAttValue = attributes.get("name");
 
-            try (FileWriter fileWriter = new FileWriter(tmpInput)) {
-                List<String> lines = reader.readLines();
-                
-                for (String line : lines) {
-                    fileWriter.write(line);
+        if (regMapNameAttValue == null) {
+            DocProcessLogger.getInstance().log(String.format("SystemRDL macro requires a 'name' property, e.g.: [systemrdl, name=filename]. (line %s in file %s)", parent.getSourceLocation().getLineNumber(), parent.getSourceLocation().getFile()), Severity.ERROR);
+            parseContent(parent, Arrays.asList(new String[]{"WARNING: [systemrdl] block not generated during the building process, name not defined ([systemrdl, name=filename])"}));
+        } else {
+            try {
+
+                //create temporal file with the SystemRDL with the inline SystemRDL specification
+                File tmpInput = File.createTempFile("sysrdl2asciidoc", ".rdlsource", null);
+
+                try ( FileWriter fileWriter = new FileWriter(tmpInput)) {
+                    List<String> lines = reader.readLines();
+
+                    for (String line : lines) {
+                        fileWriter.write(line);
+                    }
                 }
-            }
-                       
-            String regMapName;
-            Object regMapNameAttValue=attributes.get("regmapname");
-            
-            regMapName = regMapNameAttValue!=null && regMapNameAttValue instanceof String?(String)regMapNameAttValue:RandomStringUtils.randomAlphabetic(12).toUpperCase();
-            SystemRDL2AsciidocConverter.convertAndAddToOutput(regMapName,tmpInput, parent, this);
 
-            DocProcessLogger.getInstance().log("Executing inline SystemRDL Block Processor",Severity.DEBUG);
-    
-        } catch (CommandGeneratedException ex) {
-            DocProcessLogger.getInstance().log(String.format("Error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
-            parseContent(parent, Arrays.asList(new String[]{"WARNING: [systemrdl] block not generated during the building process due to an error (see details on the log files)"}));
-        } catch (IOException | CommandExecutionException ex) {             
-            DocProcessLogger.getInstance().log(String.format("Internal error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            
-            parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl:: block not generated during the building process due to an error (see details on the log files)"})); 
-        } 
-        
+                String regMapName =  (String) regMapNameAttValue ;
+                SystemRDL2AsciidocConverter.convertAndAddToOutput(regMapName, tmpInput, parent, this);
+
+                DocProcessLogger.getInstance().log("Executing inline SystemRDL Block Processor", Severity.DEBUG);
+
+            } catch (CommandGeneratedException ex) {
+                DocProcessLogger.getInstance().log(String.format("SystemRDL quality gate failed (line %s in file %s): %s", parent.getSourceLocation().getLineNumber(), parent.getSourceLocation().getFile(), ex.getLocalizedMessage()), Severity.FAILED_QGATE);
+                parseContent(parent, Arrays.asList(new String[]{"WARNING: [systemrdl] block not generated during the building process due to an error (see details on the log files)"}));
+            } catch (IOException | CommandExecutionException ex) {
+                DocProcessLogger.getInstance().log(String.format("Internal error while evaluating the embedded systemrdl specification given on the [systemrdl] macro (line %s in file %s): %s", parent.getSourceLocation().getLineNumber(), parent.getSourceLocation().getFile(), ex.getLocalizedMessage()), Severity.FATAL);
+                parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl:: block not generated during the building process due to an error (see details on the log files)"}));
+            }
+
+        }
+
         //add no further elements to the document
         return null;
-
 
     }
 

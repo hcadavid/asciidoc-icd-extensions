@@ -47,8 +47,8 @@ public class SystemRDLBlockMacroProcessor extends BlockMacroProcessor {
                 SystemRDL2AsciidocConverter.convertAndAddToOutput(FilenameUtils.removeExtension(target), rdlSourcePath.toFile(), parent, this);
             }
 
-        } catch (CommandGeneratedException ex) {
-            DocProcessLogger.getInstance().log(String.format("Error while evaluating the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.ERROR);
+        } catch (CommandGeneratedException ex) {            
+            DocProcessLogger.getInstance().log(String.format("SystemRDL quality gate failed (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FAILED_QGATE);
             parseContent(parent, Arrays.asList(new String[]{"WARNING: systemrdl block not generated during the building process due to an error (see details on the log files)"}));
         } catch (IOException | CommandExecutionException ex) {
             DocProcessLogger.getInstance().log(String.format("Internal error while executing the systemrdl:: macro (line %s in file %s): %s",parent.getSourceLocation().getLineNumber(),parent.getSourceLocation().getFile(),ex.getLocalizedMessage()), Severity.FATAL);            

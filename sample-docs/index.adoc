@@ -71,9 +71,10 @@ The following is a proof of concept of the Asciidoctor extensions that are being
 
 SystemRDL albeit being quite complete, has most of its elements optional. In order to fullfil the expected quality of the document, the building process would allow the process to include 'quality gates' that ensure the minimum elements required for the proper understanding of the system are included. The registers specifications can be defined inline (recommended only for small definitions) as follows:
 
-[systemrdl]
+[systemrdl, name="tiny"]
 -----
 addrmap tiny {
+    littleendian;
     reg {
         field {
  	    name="reg_aa";
