@@ -69,7 +69,7 @@ public class InMemoryErrorLogger implements AbstractLogger {
     }
 
     public boolean isErrorLogsEmpty() {
-        return errors.isEmpty() && fatalErrors.isEmpty();
+        return errors.isEmpty() && fatalErrors.isEmpty() && failedQualityGates.isEmpty();
     }
 
     @Override
