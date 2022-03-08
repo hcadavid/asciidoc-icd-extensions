@@ -131,8 +131,9 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
             if (logger instanceof InMemoryErrorLogger) {
                 InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
                 if (mlogger.getGlobalFatalErrorsCount()==0 && mlogger.getGlobalErrorsCount()==0 && mlogger.getGlobalFailedQualityGatesCount()==0) {
-                    DocProcessLogger.getInstance().log("Documents built with no internal errors, document building errors, or failed quality gates. Posting metadata to " + backendURL, Severity.INFO);
+                    DocProcessLogger.getInstance().log("Documents built with no internal errors, document building errors, or failed quality gates. Performing online consistency checks." + backendURL, Severity.INFO);
                     postToAPI(backendURL,backendCredentials);
+                    DocProcessLogger.getInstance().log("Consistency checks passed. Metadata posted to " + backendURL, Severity.INFO);
                 }
                 else{
                     DocProcessLogger.getInstance().log(String.format("Documents built with %d internal errors, %d document building error, and %d failed quality gates. No metadata will be posted to the API.",mlogger.getGlobalFatalErrorsCount(),mlogger.getGlobalErrorsCount(),mlogger.getGlobalFailedQualityGatesCount()), Severity.INFO);
@@ -190,7 +191,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
                 List<String> errorsList = new LinkedList<>();
                 errorsList.add(ex.getLocalizedMessage());
                 postErrorsToAPI(errorsList, "all files", backendURL);                
-                throw new FailedMetadataReportException("Post-processing error: invalid references reported. (" + backendURL + ")");
+                throw new FailedMetadataReportException("Post-processing error: references to non registered documents reported:"+ex.getLocalizedMessage());
             } catch (FailedErrorReportException ex1) {
                 DocProcessLogger.getInstance().log("Unable to report previous errors. Building process must be stopped."+ex.getLocalizedMessage(), Severity.FATAL);
                 System.exit(1);
@@ -271,7 +272,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
                     DashboardAPIClient apiClient = new DashboardAPIClient(backendURL,credentials);
                     String urlPath = String.format("/v1/icds/%s/%s/%s/errors",icdId,versionTag,pipelineId);
                     apiClient.postResource(urlPath, jsonObject);
-                    DocProcessLogger.getInstance().log("Post-processing errors reported to"+ backendURL, Severity.INFO);
+                    DocProcessLogger.getInstance().log("Post-processing errors reported to "+ backendURL, Severity.INFO);
 
                 } catch (JsonProcessingException | APIAccessException ex) {
                     throw new FailedErrorReportException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);
