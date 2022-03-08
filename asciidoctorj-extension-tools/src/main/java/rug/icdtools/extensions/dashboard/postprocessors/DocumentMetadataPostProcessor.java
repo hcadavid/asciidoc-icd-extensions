@@ -24,8 +24,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -41,6 +45,8 @@ import rug.icdtools.core.logging.AbstractLogger;
 import rug.icdtools.core.logging.DocProcessLogger;
 import rug.icdtools.core.logging.Severity;
 import rug.icdtools.core.logging.loggers.InMemoryErrorLogger;
+import rug.icdtools.core.logging.postprocessors.FailedErrorReportException;
+import rug.icdtools.core.logging.postprocessors.PipelineFailureDetails;
 import rug.icdtools.core.models.VersionedDocument;
 import rug.icdtools.extensions.crossrefs.InternalDocumentCrossRefInlineMacroProcessor;
 
@@ -167,12 +173,28 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
         //Collect reference documents data from CrossRef extension        
         Set<VersionedDocument> referencedDocs = InternalDocumentCrossRefInlineMacroProcessor.getOverallReferencedDocuments();
         
+        //TODO check for complexity
+        //If the check of referenced document fails due to API access errors 
+        //(APIAccessException) throw an exception that will abort the building process.
+        //If the check fails due to invalid doc cross-references, a last error 
+        //report is posted before sending such exception.
+        //If such report fails
         try {
             //check wether the referenced documents/versions exist
             Map<VersionedDocument,PublishedICDMetadata> refDocsDetails = checkReferencedDocuments(referencedDocs,backendURL,backendCredentials);
             
         } catch (APIAccessException ex) {
-            throw new FailedMetadataReportException("One or more of the documents referenced doesn't exist on the given backend (" + backendURL + ") database: "+ex.getLocalizedMessage());
+            throw new FailedMetadataReportException("Unable to access documentation management API (" + backendURL + ")");
+        } catch (InvalidDocumentReferenceException ex) {            
+            try {
+                List<String> errorsList = new LinkedList<>();
+                errorsList.add(ex.getLocalizedMessage());
+                postErrorsToAPI(errorsList, "all files", backendURL);                
+                throw new FailedMetadataReportException("Post-processing error: invalid references reported. (" + backendURL + ")");
+            } catch (FailedErrorReportException ex1) {
+                DocProcessLogger.getInstance().log("Unable to report previous errors. Building process must be stopped."+ex.getLocalizedMessage(), Severity.FATAL);
+                System.exit(1);
+            }
         }
         
         icdMetadata.setReferencedDocs(referencedDocs);
@@ -191,16 +213,76 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
 
     }
     
-    public Map<VersionedDocument,PublishedICDMetadata> checkReferencedDocuments(Set<VersionedDocument> referencedDocs, String backendUrl, String backendCredentials) throws APIAccessException{
+    /**
+     * 
+     * @param referencedDocs
+     * @param backendUrl
+     * @param backendCredentials
+     * @return
+     * @throws APIAccessException if the connection to the backend failed
+     * @throws InvalidDocumentReferenceException if a referenced document is not available
+     */
+    public Map<VersionedDocument,PublishedICDMetadata> checkReferencedDocuments(Set<VersionedDocument> referencedDocs, String backendUrl, String backendCredentials) throws APIAccessException, InvalidDocumentReferenceException {
         DashboardAPIClient apiClient = new DashboardAPIClient(backendUrl, backendCredentials);
         Map<VersionedDocument,PublishedICDMetadata> docsDetails = new LinkedHashMap<>();
         for (VersionedDocument refdoc:referencedDocs){
-            docsDetails.put(refdoc, apiClient.getResource(String.format(DOCUMENT_RESOURCE_URL, refdoc.getDocName(),refdoc.getVersionTag()), PublishedICDMetadata.class));
+            try {
+                docsDetails.put(refdoc, apiClient.getResource(String.format(DOCUMENT_RESOURCE_URL, refdoc.getDocName(),refdoc.getVersionTag()), PublishedICDMetadata.class));
+            } catch (APIAccessException ex) {
+                throw new InvalidDocumentReferenceException(refdoc.getDocName(),refdoc.getVersionTag(),"Referenced document "+refdoc.getDocName()+", version "+refdoc.getVersionTag()+" is not registered on the documentation management system.");
+            }
         }
         return docsDetails;
         
     }
     
 
+    private void postErrorsToAPI(List<String> errors,String docFileName, String backendURL) throws FailedErrorReportException{
+        
+            String credentials = System.getProperty("BACKEND_CREDENTIALS"); 
+            String pipelineId = System.getProperty("PIPELINE_ID");
+            String icdId = System.getProperty("PROJECT_NAME");
+            String versionTag = System.getProperty("COMMIT_TAG");
+
+           
+            if (credentials==null){
+                throw new FailedErrorReportException("The document build process was expected to report errors to the API at ["+backendURL+"], but no credentials were provided (BACKEND_CREDENTIALS sysenv)");
+            }
+            else if (pipelineId == null || icdId == null){
+                throw new FailedErrorReportException("The document build process was expected to report errors to the API at ["+backendURL+"], but required GitLab environment variables were not found (the process is expected to run within a GitLab CI/CD environment)");                
+            }
+            else{
+                ObjectMapper mapper = new ObjectMapper();
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+
+                PipelineFailureDetails docBuildingFailureDetails = new PipelineFailureDetails();
+                docBuildingFailureDetails.setDate(dtf.format(now));
+                docBuildingFailureDetails.setdocName(docFileName);
+                docBuildingFailureDetails.setErrors(new LinkedList<>());
+                docBuildingFailureDetails.setFatalErrors(errors);
+                docBuildingFailureDetails.setFailedQualityGates(new LinkedList<>());
+
+                String jsonObject;
+                try {
+                    //Posting to https://[apiurl]/v1/icds/{icdid}/{version}/{pipelineid}/errors")
+                    jsonObject = mapper.writeValueAsString(docBuildingFailureDetails);
+                    DashboardAPIClient apiClient = new DashboardAPIClient(backendURL,credentials);
+                    String urlPath = String.format("/v1/icds/%s/%s/%s/errors",icdId,versionTag,pipelineId);
+                    apiClient.postResource(urlPath, jsonObject);
+                    DocProcessLogger.getInstance().log("Post-processing errors reported to"+ backendURL, Severity.INFO);
+
+                } catch (JsonProcessingException | APIAccessException ex) {
+                    throw new FailedErrorReportException("The document build process was expected to report errors to the API at " + backendURL + ", but the request failed or coldn't be performed:" + ex.getLocalizedMessage(), ex);
+                }
+
+            }
+        
+        
+    }
+
+    
+    
 }
 

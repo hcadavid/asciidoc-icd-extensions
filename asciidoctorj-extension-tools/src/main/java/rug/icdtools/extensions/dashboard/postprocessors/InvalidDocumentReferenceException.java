@@ -15,23 +15,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package rug.icdtools.extensions.dashboard.interfacing.docsapiclient;
+package rug.icdtools.extensions.dashboard.postprocessors;
 
 /**
  *
  * @author hcadavid
  */
-public class APIAccessException extends Exception {
+public class InvalidDocumentReferenceException extends Exception {
 
-    public APIAccessException(String message) {
+    String docName;
+    String version;
+
+    public InvalidDocumentReferenceException(String docName, String version, String message) {
         super(message);
+        this.docName = docName;
+        this.version = version;
     }
 
-    public APIAccessException(String message, Throwable cause) {
+    public InvalidDocumentReferenceException(String docName, String version, String message, Throwable cause) {
         super(message, cause);
+        this.docName = docName;
+        this.version = version;
     }
-
-
-
+    
     
 }
