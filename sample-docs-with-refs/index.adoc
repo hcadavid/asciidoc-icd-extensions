@@ -24,7 +24,9 @@ This is a system overview described using text-based diagram specifications that
 
 // To be supported soon: (e.g., def:Channel[context=Software] ... abr:ARVI[context=LOFAR]).
 
-Here is an example that makes reference to a currently publised version of a document: docref:document_A[version=v1.3]
+Here is an example that makes reference to a currently publised version of a document: docref:document_A[version=v1.3] and 
+
+docref:document_ZZ[version=v1.1]
 
 
 In this document you can make use of the existing Asciidoctor plugins to create text-based diagrams, like the following ditaa diagram and PlantUML diagrams:
@@ -71,9 +73,10 @@ The following is a proof of concept of the Asciidoctor extensions that are being
 
 SystemRDL albeit being quite complete, has most of its elements optional. In order to fullfil the expected quality of the document, the building process would allow the process to include 'quality gates' that ensure the minimum elements required for the proper understanding of the system are included. The registers specifications can be defined inline (recommended only for small definitions) as follows:
 
-[systemrdl]
+[systemrdl, name="tiny"]
 -----
 addrmap tiny {
+    bigendian;
     reg {
         field {
  	    name="reg_aa";
