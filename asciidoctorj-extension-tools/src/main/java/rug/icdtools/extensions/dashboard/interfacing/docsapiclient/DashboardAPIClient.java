@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.HttpEntity;
@@ -113,7 +114,7 @@ public class DashboardAPIClient {
             HttpPost postRequest = new HttpPost(baseURL + resource);            
             postRequest.addHeader("Authorization", authToken);
             postRequest.addHeader("Content-Type", "application/json;charset=UTF-8");
-            postRequest.setEntity(new StringEntity(jsonObject));
+            postRequest.setEntity(new StringEntity(jsonObject,StandardCharsets.UTF_8));
             
             HttpResponse response = httpClient.execute(postRequest);
             
@@ -136,7 +137,7 @@ public class DashboardAPIClient {
             HttpPut putRequest = new HttpPut(baseURL + resource);
             putRequest.addHeader("Authorization", authToken);
             putRequest.addHeader("Content-Type", "application/json;charset=UTF-8");
-            putRequest.setEntity(new StringEntity(jsonObject));
+            putRequest.setEntity(new StringEntity(jsonObject,StandardCharsets.UTF_8));
 
             HttpResponse response = httpClient.execute(putRequest);
 
