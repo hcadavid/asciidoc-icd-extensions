@@ -46,8 +46,8 @@ public class SystemRDL2AsciidocConverter {
         //Creates a C header and its SHA256 checksum
         CommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_cheader.sh", input.getAbsolutePath(), outputPath.resolve(headerFileName).toFile().getAbsolutePath());
 
-        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's SHA256 URI to the clipboard\" onClick=\"navigator.clipboard.writeText(window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/%s')\">Register map's header checksum</button>]",headerFileName+".sha"));
-        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's URI to the clipboard\" onClick=\"navigator.clipboard.writeText(window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/%s')\">Register map's header</button>]",headerFileName));
+        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's SHA256 URL to the clipboard\" onClick=\"navigator.clipboard.writeText(window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/%s')\">Register map's header checksum</button>]",headerFileName+".sha"));
+        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's URL to the clipboard\" onClick=\"navigator.clipboard.writeText(window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/%s')\">Register map's header</button>]",headerFileName));
                 
         asccidocProcessor.parseContent(parent, newOutputAsciidocLines);
 
