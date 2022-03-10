@@ -56,17 +56,21 @@ public class SystemRDL2AsciidocConverter {
                 "    navigator.clipboard.writeText(url); }";
                 
         String copyChecksumButtonAction =  
-                "var headerName='%s';var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/'+headerName;" +
+                "var checksumName='%s';" +
+                "var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/'+checksumName;" +
+                "var verUrl = url.substring(0,url.lastIndexOf('/'));" +
+                "var docRoot = verUrl.substring(0,verUrl.lastIndexOf('/'));" +
+                "url = docRoot+'/latest/'+checksumName;"+
                 "navigator.clipboard.writeText(url);"+
                 "if (confirm('Copy the location of the register map checksum to your clipboard? ('+url+')') == true) {"+
                 "    navigator.clipboard.writeText(url); }";
                 
-
-        
-        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's checksum file location to your clipboard\" onClick=\""+copyHeaderButtonAction+"\">Copy header's checksum file location</button>]",headerFileName+".sha"));
         
         
-        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy generated header file location to your clipboard\"          onClick=\""+copyChecksumButtonAction+"\">Copy header's file location</button>]",headerFileName));
+        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's checksum file location to your clipboard\" onClick=\""+copyChecksumButtonAction+"\">Copy header's checksum file location</button>]",headerFileName+".sha"));
+        
+        
+        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy generated header file location to your clipboard\"          onClick=\""+copyHeaderButtonAction+"\">Copy header's file location</button>]",headerFileName));
                 
         asccidocProcessor.parseContent(parent, newOutputAsciidocLines);
 
