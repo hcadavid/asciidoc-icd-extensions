@@ -45,9 +45,28 @@ public class SystemRDL2AsciidocConverter {
 
         //Creates a C header and its SHA256 checksum
         CommandRunner.runCommand("sh", "sysrdl2jinja/convert_to_cheader.sh", input.getAbsolutePath(), outputPath.resolve(headerFileName).toFile().getAbsolutePath());
+        
+        //newOutputAsciidocLines.add(String.format("pass:[<input type=\"text\" id=\"header\" value=\"window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/%s'\" readonly>]",headerFileName+".sha"));
+        
+        
+        String copyHeaderButtonAction =  
+                "var headerName='%s';var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/'+headerName;" +
+                "navigator.clipboard.writeText(url);"+
+                "if (confirm('Copy the location of the generated header file to your clipboard? ('+url+')') == true) {"+
+                "    navigator.clipboard.writeText(url); }";
+                
+        String copyChecksumButtonAction =  
+                "var headerName='%s';var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/'+headerName;" +
+                "navigator.clipboard.writeText(url);"+
+                "if (confirm('Copy the location of the register map checksum to your clipboard? ('+url+')') == true) {"+
+                "    navigator.clipboard.writeText(url); }";
+                
 
-        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's SHA256 URL to the clipboard\" onClick=\"navigator.clipboard.writeText(window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/%s')\">Register map's header checksum</button>]",headerFileName+".sha"));
-        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's URL to the clipboard\" onClick=\"navigator.clipboard.writeText(window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/%s')\">Register map's header</button>]",headerFileName));
+        
+        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy header's checksum file location to your clipboard\" onClick=\""+copyHeaderButtonAction+"\">Copy header's checksum file location</button>]",headerFileName+".sha"));
+        
+        
+        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy generated header file location to your clipboard\"          onClick=\""+copyChecksumButtonAction+"\">Copy header's file location</button>]",headerFileName));
                 
         asccidocProcessor.parseContent(parent, newOutputAsciidocLines);
 
