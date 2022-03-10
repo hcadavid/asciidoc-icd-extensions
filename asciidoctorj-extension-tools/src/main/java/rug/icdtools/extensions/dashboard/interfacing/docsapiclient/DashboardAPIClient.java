@@ -112,7 +112,7 @@ public class DashboardAPIClient {
 
             HttpPost postRequest = new HttpPost(baseURL + resource);            
             postRequest.addHeader("Authorization", authToken);
-            postRequest.addHeader("Content-Type", "application/json");
+            postRequest.addHeader("Content-Type", "application/json;charset=UTF-8");
             postRequest.setEntity(new StringEntity(jsonObject));
             
             HttpResponse response = httpClient.execute(postRequest);
@@ -135,7 +135,7 @@ public class DashboardAPIClient {
 
             HttpPut putRequest = new HttpPut(baseURL + resource);
             putRequest.addHeader("Authorization", authToken);
-            putRequest.addHeader("Content-Type", "application/json");
+            putRequest.addHeader("Content-Type", "application/json;charset=UTF-8");
             putRequest.setEntity(new StringEntity(jsonObject));
 
             HttpResponse response = httpClient.execute(putRequest);
