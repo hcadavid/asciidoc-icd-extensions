@@ -70,9 +70,10 @@ The following is a proof of concept of the Asciidoctor extensions that are being
 
 SystemRDL albeit being quite complete, has most of its elements optional. In order to fullfil the expected quality of the document, the building process would allow the process to include 'quality gates' that ensure the minimum elements required for the proper understanding of the system are included. The registers specifications can be defined inline (recommended only for small definitions) as follows:
 
-[systemrdl]
+[systemrdl, name="aaaa"]
 -----
 addrmap tiny {
+    bigendian;
     reg {
         field {
  	    name="reg_aa";
@@ -91,7 +92,6 @@ addrmap tiny {
 
 For larger registry maps, the specifications can be maintained in separate files. In both cases, the details of any systax error are informed on the CI/CD platform's dashboard:
 
-systemrdl::rover.rdl[]
 
 A set of scripts for checking that the generated artifacts are up-to-date (which could be included on the building process) are also under development.
 

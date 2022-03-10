@@ -24,7 +24,6 @@ This is a system overview described using text-based diagram specifications that
 
 // To be supported soon: (e.g., def:Channel[context=Software] ... abr:ARVI[context=LOFAR]).
 
-Doc docref:document_two[version=v1.1] asdasd
 
 
 In this document you can make use of the existing Asciidoctor plugins to create text-based diagrams, like the following ditaa diagram and PlantUML diagrams:
@@ -93,7 +92,6 @@ addrmap tiny {
 
 For larger registry maps, the specifications can be maintained in separate files. In both cases, the details of any systax error are informed on the CI/CD platform's dashboard:
 
-systemrdl::rover.rdl[]
 
 A set of scripts for checking that the generated artifacts are up-to-date (which could be included on the building process) are also under development.
 

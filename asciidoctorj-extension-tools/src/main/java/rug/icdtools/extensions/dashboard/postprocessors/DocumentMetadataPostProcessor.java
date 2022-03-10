@@ -49,6 +49,7 @@ import rug.icdtools.core.logging.postprocessors.FailedErrorReportException;
 import rug.icdtools.core.logging.postprocessors.PipelineFailureDetails;
 import rug.icdtools.core.models.VersionedDocument;
 import rug.icdtools.extensions.crossrefs.InternalDocumentCrossRefInlineMacroProcessor;
+import rug.icdtools.extensions.dashboard.interfacing.docsapiclient.APIResources;
 
 /**
  *
@@ -59,7 +60,6 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
     private static boolean visitingFirstDocument = true;
 
     private static Set<String> notVisited;
-    private static final String DOCUMENT_RESOURCE_URL = "/v1/icds/%s/%s";
 
     @Override
     public String process(Document dcmnt, String output) {
@@ -145,6 +145,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
     }
 
     private void postToAPI(String backendURL, String backendCredentials) throws FailedMetadataReportException {
+
         String[] envVars = new String[]{
             "PIPELINE_ID",
             "PROJECT_NAME",
@@ -179,7 +180,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
         //(APIAccessException) throw an exception that will abort the building process.
         //If the check fails due to invalid doc cross-references, a last error 
         //report is posted before sending such exception.
-        //If such report fails
+        //If such report fails, make the overall building process fail.
         try {
             //check wether the referenced documents/versions exist
             Map<VersionedDocument,PublishedICDMetadata> refDocsDetails = checkReferencedDocuments(referencedDocs,backendURL,backendCredentials);
@@ -228,7 +229,7 @@ public class DocumentMetadataPostProcessor extends Postprocessor {
         Map<VersionedDocument,PublishedICDMetadata> docsDetails = new LinkedHashMap<>();
         for (VersionedDocument refdoc:referencedDocs){
             try {
-                docsDetails.put(refdoc, apiClient.getResource(String.format(DOCUMENT_RESOURCE_URL, refdoc.getDocName(),refdoc.getVersionTag()), PublishedICDMetadata.class));
+                docsDetails.put(refdoc, apiClient.getResource(String.format(APIResources.DOCUMENT_RESOURCE_URL, refdoc.getDocName(),refdoc.getVersionTag()), PublishedICDMetadata.class));
             } catch (APIAccessException ex) {
                 throw new InvalidDocumentReferenceException(refdoc.getDocName(),refdoc.getVersionTag(),"Referenced document "+refdoc.getDocName()+", version "+refdoc.getVersionTag()+" is not registered on the documentation management system.");
             }

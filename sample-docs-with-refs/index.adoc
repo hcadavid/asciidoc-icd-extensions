@@ -74,7 +74,7 @@ SystemRDL albeit being quite complete, has most of its elements optional. In ord
 [systemrdl, name="tiny"]
 -----
 addrmap tiny {
-
+    littleendian;
     reg {
         field {
  	    name="reg_aa";
