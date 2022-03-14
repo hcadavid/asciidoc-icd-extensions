@@ -43,6 +43,7 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 #RUN pip3 install nwdiag
 
 # Source / Output folders 
+RUN mkdir /vale
 RUN mkdir /adocsrc
 RUN mkdir /adocout
 RUN mkdir /public
@@ -54,6 +55,7 @@ RUN chown -R user /asciidocext
 RUN chown -R user /adocsrc
 RUN chown -R user /adocout
 RUN chown -R user /public
+RUN chown -R user /vale
 
 # Build asciidoctor extensions
 USER user
@@ -63,3 +65,7 @@ RUN chmod +x build_docs.sh
 # Install sysrdl2jinja dependencies
 #RUN sh sysrdl2jinja/install.sh
 RUN pip install -r sysrdl2jinja/requirements.txt
+
+
+RUN wget -P /tmp https://github.com/errata-ai/vale/releases/download/v2.15.2/vale_2.15.2_Linux_64-bit.tar.gz
+RUN tar -xf /tmp/vale_2.15.2_Linux_64-bit.tar.gz -C /vale
