@@ -48,6 +48,7 @@ RUN mkdir /adocsrc
 RUN mkdir /adocout
 RUN mkdir /public
 COPY ./ /asciidocext/
+COPY ./.vale.ini /asciidocext/
 WORKDIR /asciidocext
 
 # Switch folder owners from root to user 
