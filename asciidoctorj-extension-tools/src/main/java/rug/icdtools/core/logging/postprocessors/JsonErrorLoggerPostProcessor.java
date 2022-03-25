@@ -68,7 +68,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 //If BACKEND_URL system property is defined, also dump the error details there
                 String backendURL = System.getProperty("BACKEND_URL");
                 if (backendURL != null && !backendURL.trim().equals("")) {
-                    DocProcessLogger.getInstance().log("Posting errors/failed quality gates on "+docFileName+" to the API at "+backendURL, Severity.INFO);
+                    DocProcessLogger.getInstance().log("Posting errors/failed quality gates on "+docFileName+" (if they exist) to the API at "+backendURL, Severity.INFO);
                     postToAPI(mlogger, docFileName, backendURL);
                 }
                 else{
