@@ -57,7 +57,7 @@ import rug.icdtools.interfacing.localcommands.CommandRunner;
  */
 public class JsonErrorLoggerPostProcessor extends Postprocessor {
 
-    private static final String VALE_LINTER_OUTPUT_PATH = "VALE_LINTER_OUPUT_PATH";
+    private static final String VALE_LINTER_OUTPUT_PATH = "VALE_LINTER_OUTPUT_PATH";
 
     private void checkExternalReports() throws FailedErrorReportException {
 
@@ -116,8 +116,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 
                 //Perform third-party tools checks before reporting errors reported
                 //by the macros
-                 
-                checkExternalReports();
+                if (docFileName.equals("index")) checkExternalReports();
 
 
                 DocProcessLogger.getInstance().log("Dumping error details on "+docFileName + ".errlogs file", Severity.INFO);
@@ -128,6 +127,7 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 String backendURL = System.getProperty("BACKEND_URL");
                 if (backendURL != null && !backendURL.trim().equals("")) {
                     DocProcessLogger.getInstance().log("Posting errors/failed quality gates on "+docFileName+" (if they exist) to the API at "+backendURL, Severity.INFO);
+                                        
                     postToAPI(mlogger, docFileName, backendURL);
                 }
                 else{

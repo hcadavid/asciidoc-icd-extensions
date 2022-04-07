@@ -8,6 +8,7 @@ This is a minimalist example of an ICD for a theoretical rover, generated follow
 
 tagshistory::default[] ten centimeters
 
+
 == Reference documents
 
 references::default[]
@@ -76,7 +77,6 @@ SystemRDL albeit being quite complete, has most of its elements optional. In ord
 [systemrdl, name="tiny"]
 -----
 addrmap tiny {
-    littleendian;
     reg {
         field {
  	    name="reg_aa";
