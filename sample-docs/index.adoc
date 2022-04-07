@@ -6,7 +6,7 @@ This is a minimalist example of an ICD for a theoretical rover, generated follow
 
 == Versions history
 
-tagshistory::default[]
+tagshistory::default[] ten centimeters
 
 == Reference documents
 
