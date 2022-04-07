@@ -19,7 +19,8 @@ RUN apk add --update nodejs nodejs-npm
 #RUN echo "${ALPINE_MIRROR}/v3.12/main/" >> /etc/apk/repositories
 #RUN apk add nodejs --repository="http://dl-cdn.alpinelinux.org/alpine/v3.12/main/"
 #RUN node --version
-RUN npm install -g bytefield-svg
+#RUN npm install -g bytefield-svg
+#RUN npm install @mermaid-js/mermaid-cli
 
 #RUN npm install -g netlify-cli --unsafe-perm=true
 
@@ -57,6 +58,7 @@ RUN chown -R user /public
 
 # Build asciidoctor extensions
 USER user
+ENV PATH="${PATH}:/node_modules/.bin/"
 RUN mvn compile
 RUN chmod +x build_docs.sh
 
