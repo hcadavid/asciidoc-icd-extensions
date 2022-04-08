@@ -6,7 +6,9 @@ This is a minimalist example of an ICD for a theoretical rover, generated follow
 
 == Versions history
 
-tagshistory::default[] ten centimeters
+tagshistory::default[]
+
+ ten centimeters
 
 
 == Reference documents
@@ -77,6 +79,7 @@ SystemRDL albeit being quite complete, has most of its elements optional. In ord
 [systemrdl, name="tiny"]
 -----
 addrmap tiny {
+    littleendian;
     reg {
         field {
  	    name="reg_aa";
@@ -101,4 +104,4 @@ A set of scripts for checking that the generated artifacts are up-to-date (which
 
 In this section you can make reference to other acronyms to see how they are linked to the glossary section above defined: acr:AIPS++[] and to acr:DDT[], a term related to the acr:LOFAR1[], and acr:Casacore[].
 
-
+docref:station-control-icd[version=v0.5]
