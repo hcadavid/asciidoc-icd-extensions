@@ -8,6 +8,9 @@ This is a minimalist example of an ICD for a theoretical rover, generated follow
 
 tagshistory::default[]
 
+ ten centimeters
+
+
 == Reference documents
 
 references::default[]
@@ -25,6 +28,7 @@ This is a system overview described using text-based diagram specifications that
 // To be supported soon: (e.g., def:Channel[context=Software] ... abr:ARVI[context=LOFAR]).
 
 
+KKV
 
 In this document you can make use of the existing Asciidoctor plugins to create text-based diagrams, like the following ditaa diagram and PlantUML diagrams:
 
@@ -60,6 +64,8 @@ BlockProcessor <|-- DiagramBlock
 DiagramBlock <|-- DitaaBlock
 DiagramBlock <|-- PlantUmlBlock
 ----
+
+acr:TAI[]
 
 
 == Interfacing details
@@ -98,4 +104,4 @@ A set of scripts for checking that the generated artifacts are up-to-date (which
 
 In this section you can make reference to other acronyms to see how they are linked to the glossary section above defined: acr:AIPS++[] and to acr:DDT[], a term related to the acr:LOFAR1[], and acr:Casacore[].
 
-
+docref:station-control-icd[version=v0.5]

@@ -21,7 +21,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,18 +36,66 @@ import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.Postprocessor;
 import rug.icdtools.core.logging.loggers.InMemoryErrorLogger;
 import org.apache.commons.io.FilenameUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import rug.icdtools.extensions.dashboard.interfacing.docsapiclient.APIAccessException;
 import rug.icdtools.extensions.dashboard.interfacing.docsapiclient.DashboardAPIClient;
 import rug.icdtools.core.logging.AbstractLogger;
 import rug.icdtools.core.logging.DocProcessLogger;
 import rug.icdtools.core.logging.Severity;
+import rug.icdtools.interfacing.localcommands.CommandRunner;
 
 /**
+ * This post-processor report the errors identified on each file by other
+ * inline/block macros, dumping them on a file, and -if the backend is enabled-
+ * reporting them to the web API. It also reports errors identified, on the
+ * corresponding file, by a third-party tool.
  *
  * @author hcadavid
  */
 public class JsonErrorLoggerPostProcessor extends Postprocessor {
 
+    private static final String VALE_LINTER_OUTPUT_PATH = "VALE_LINTER_OUTPUT_PATH";
+
+    private void checkExternalReports() throws FailedErrorReportException {
+
+        if (System.getProperty(VALE_LINTER_OUTPUT_PATH) == null) {
+            
+            DocProcessLogger.getInstance().log("VALE_LINTER_OUPUT_PATH variable not defined. No prose linter reports will be analyzed.", Severity.INFO);    
+
+        } else {
+            File linterOuput = new File(System.getProperty(VALE_LINTER_OUTPUT_PATH));
+
+            JSONParser parser = new JSONParser();
+
+            try ( Reader reader = new FileReader(linterOuput)) {
+
+                JSONObject jsonObject = (JSONObject) parser.parse(reader);
+                for (Object key : jsonObject.keySet()) {
+                    System.out.println(key);
+                    JSONArray o = (JSONArray) jsonObject.get(key);
+                    //errors
+                    for (int i = 0; i < o.size(); i++) {
+                        JSONObject error = (JSONObject) o.get(i);
+                        String severity = (String) error.get("Severity");
+
+                        if (severity.equals("error")) {
+                            DocProcessLogger.getInstance().log(String.format("Failed writing style quality criteria: %s, in file %s, line %s", error.get("Message"), "index.adoc", error.get("Line")), Severity.FAILED_QGATE);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new FailedErrorReportException("Error while checking prose linter results:" + e.getLocalizedMessage(), e);
+            } catch (ParseException e) {
+                throw new FailedErrorReportException("Error while checking prose linter results:" + e.getLocalizedMessage(), e);
+            }
+        }
+
+        
+    }
+    
     @Override
     public String process(Document dcmnt, String output) {
 
@@ -57,10 +108,17 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
         Path errorFilePath = outputPath.resolve(docFileName + ".errlogs");
                 
         AbstractLogger logger = DocProcessLogger.getInstance();
+                
         
         if (logger instanceof InMemoryErrorLogger) {
 
             try {
+                
+                //Perform third-party tools checks before reporting errors reported
+                //by the macros
+                if (docFileName.equals("index")) checkExternalReports();
+
+
                 DocProcessLogger.getInstance().log("Dumping error details on "+docFileName + ".errlogs file", Severity.INFO);
                 InMemoryErrorLogger mlogger = (InMemoryErrorLogger) logger;
                 dumpToFile(mlogger, docFileName, errorFilePath);
@@ -68,7 +126,8 @@ public class JsonErrorLoggerPostProcessor extends Postprocessor {
                 //If BACKEND_URL system property is defined, also dump the error details there
                 String backendURL = System.getProperty("BACKEND_URL");
                 if (backendURL != null && !backendURL.trim().equals("")) {
-                    DocProcessLogger.getInstance().log("Posting errors/failed quality gates on "+docFileName+" to the API at "+backendURL, Severity.INFO);
+                    DocProcessLogger.getInstance().log("Posting errors/failed quality gates on "+docFileName+" (if they exist) to the API at "+backendURL, Severity.INFO);
+                                        
                     postToAPI(mlogger, docFileName, backendURL);
                 }
                 else{
