@@ -1,1 +1,0 @@
-/vale/vale --config='/asciidocext/.vale.ini' --ext=.md /tmp/source/*.adoc --output JSON > /tmp/linter-output.json 

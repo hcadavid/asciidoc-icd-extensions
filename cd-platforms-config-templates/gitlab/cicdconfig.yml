@@ -1,4 +1,4 @@
-image: hectorcadavid/asciidoctor-icd-experimental:v0.1
+image: <DOCKER_HUB_IMAGE>
 
 variables:
   LOG_TAGS_FILE_PATH: /tmp/tags.txt
