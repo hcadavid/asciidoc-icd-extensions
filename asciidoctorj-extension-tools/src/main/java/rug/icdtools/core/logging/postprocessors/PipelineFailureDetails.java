@@ -20,6 +20,7 @@ package rug.icdtools.core.logging.postprocessors;
 import java.io.Serializable;
 import java.util.List;
 
+//TODO rename to DocumentBuildFailure
 public class PipelineFailureDetails implements Serializable {
 
     String date;
