@@ -30,6 +30,7 @@ import rug.icdtools.extensions.glossaries.AcronymInlineMacroProcessor;
 import rug.icdtools.extensions.glossaries.GlossaryPlacementBlockProcessor;
 import rug.icdtools.extensions.glossaries.GlossaryPostProcessor;
 import rug.icdtools.core.logging.postprocessors.JsonErrorLoggerPostProcessor;
+import rug.icdtools.extensions.bitwiseencoding.KaitaiSpecBlockProcessor;
 import rug.icdtools.extensions.versionlogs.VersionLogPlacementBlockProcessor;
 import rug.icdtools.extensions.versionlogs.VersionLogPostProcessor;
 
@@ -48,6 +49,8 @@ public class ExtensionToolsRegistry implements ExtensionRegistry {
         javaExtensionRegistry.blockMacro("systemrdl", SystemRDLBlockMacroProcessor.class);
         javaExtensionRegistry.block("systemrdl", SystemRDLBlockProcessor.class);        
         
+        javaExtensionRegistry.block("rs232encoding", KaitaiSpecBlockProcessor.class);        
+                        
         javaExtensionRegistry.inlineMacro("acr", AcronymInlineMacroProcessor.class);        
         javaExtensionRegistry.blockMacro("glossary", GlossaryPlacementBlockProcessor.class);
         javaExtensionRegistry.postprocessor(GlossaryPostProcessor.class);

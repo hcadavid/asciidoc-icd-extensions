@@ -1,0 +1,20 @@
+digraph {
+	rankdir=LR;
+	node [shape=plaintext];
+	subgraph cluster__rs232test_2 {
+		label="Rs232test2";
+		graph[style=dotted];
+
+		rs232test_2__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+			<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+			<TR><TD PORT="p1head_pos">0</TD><TD PORT="p1head_size">1b</TD><TD>BitsType1(LittleBitEndian)</TD><TD PORT="p1head_type">p1head</TD></TR>
+			<TR><TD PORT="sid_pos">0:1</TD><TD PORT="sid_size">4b</TD><TD>b4</TD><TD PORT="sid_type">sid</TD></TR>
+			<TR><TD PORT="p1v_pos">0:5</TD><TD PORT="p1v_size">3b</TD><TD>b3</TD><TD PORT="p1v_type">p1v</TD></TR>
+			<TR><TD PORT="p2head_pos">1</TD><TD PORT="p2head_size">1b</TD><TD>BitsType1(LittleBitEndian)</TD><TD PORT="p2head_type">p2head</TD></TR>
+			<TR><TD PORT="p2v_pos">1:1</TD><TD PORT="p2v_size">7b</TD><TD>b7</TD><TD PORT="p2v_type">p2v</TD></TR>
+			<TR><TD PORT="p3head_pos">2</TD><TD PORT="p3head_size">1b</TD><TD>BitsType1(LittleBitEndian)</TD><TD PORT="p3head_type">p3head</TD></TR>
+			<TR><TD PORT="p3v_pos">2:1</TD><TD PORT="p3v_size">6b</TD><TD>b6</TD><TD PORT="p3v_type">p3v</TD></TR>
+			<TR><TD PORT="parityc_pos">2:7</TD><TD PORT="parityc_size">1b</TD><TD>BitsType1(LittleBitEndian)</TD><TD PORT="parityc_type">parityc</TD></TR>
+		</TABLE>>];
+	}
+}

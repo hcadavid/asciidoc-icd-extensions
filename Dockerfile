@@ -44,6 +44,7 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 #RUN pip3 install nwdiag
 
 # Source / Output folders 
+RUN mkdir /kaitai
 RUN mkdir /vale
 RUN mkdir /adocsrc
 RUN mkdir /adocout
@@ -58,6 +59,7 @@ RUN chown -R user /adocsrc
 RUN chown -R user /adocout
 RUN chown -R user /public
 RUN chown -R user /vale
+RUN chown -R user /kaitai
 
 # Build asciidoctor extensions
 USER user
@@ -70,5 +72,10 @@ RUN chmod +x build_docs.sh
 RUN pip install -r sysrdl2jinja/requirements.txt
 
 
+# Install vale linter
 RUN wget -P /tmp https://github.com/errata-ai/vale/releases/download/v2.15.2/vale_2.15.2_Linux_64-bit.tar.gz
 RUN tar -xf /tmp/vale_2.15.2_Linux_64-bit.tar.gz -C /vale
+
+# Install kaitai parser
+RUN wget -P /tmp/ https://github.com/kaitai-io/kaitai_struct_compiler/releases/download/0.10/kaitai-struct-compiler-0.10.zip
+RUN unzip /tmp/kaitai-struct-compiler-0.10.zip -d /kaitai

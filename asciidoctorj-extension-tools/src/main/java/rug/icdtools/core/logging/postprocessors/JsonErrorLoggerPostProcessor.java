@@ -45,7 +45,6 @@ import rug.icdtools.extensions.dashboard.interfacing.docsapiclient.DashboardAPIC
 import rug.icdtools.core.logging.AbstractLogger;
 import rug.icdtools.core.logging.DocProcessLogger;
 import rug.icdtools.core.logging.Severity;
-import rug.icdtools.interfacing.localcommands.CommandRunner;
 
 /**
  * This post-processor report the errors identified on each file by other
