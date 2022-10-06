@@ -5,16 +5,12 @@
 package rug.icdtools.extensions.sysrdl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.lang.RandomStringUtils;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;

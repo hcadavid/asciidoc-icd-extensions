@@ -13,10 +13,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BaseProcessor;
@@ -33,12 +37,15 @@ import rug.icdtools.interfacing.localcommands.CommandRunner;
  */
 public class KaitaiSpec2AsciidocConverter {
 
-    private static String getKaitaiSpecId(File f) throws FileNotFoundException, MalformedKaitaiSpecificationException {
+    private static Object parseYamlFile(File f) throws FileNotFoundException{
         Yaml yaml = new Yaml();
         InputStream inputStream = new FileInputStream(f);
-
-        Object content = yaml.load(inputStream);
-
+        return yaml.load(inputStream);
+    }
+    
+    
+    private static String getKaitaiSpecId(Object content) throws FileNotFoundException, MalformedKaitaiSpecificationException {
+        
         String kaitaiSpecId=null;
         
         if (!(content instanceof Map)) {
@@ -58,10 +65,23 @@ public class KaitaiSpec2AsciidocConverter {
 
         }
         
+        assert kaitaiSpecId!=null;
         return kaitaiSpecId;
     }
 
-    
+    private static boolean isEndiannessDefined(Object content) throws FileNotFoundException, MalformedKaitaiSpecificationException {        
+        if (content instanceof Map){
+            Object metadata = ((Map<String, Object>) content).get("meta");
+            if (metadata!=null && metadata instanceof Map){
+                Object endianness = ((Map<String, Object>) metadata).get("bit-endian");
+                return (endianness!=null && endianness instanceof String);
+            }
+        }
+        
+        return false;
+                
+    }                
+     
     
     
     public static void convertAndAddToOutput(File kaitaiSpecFile, StructuralNode parent, BaseProcessor asccidocProcessor) throws CommandGeneratedException, FileNotFoundException, IOException, CommandExecutionException, MalformedKaitaiSpecificationException {
@@ -71,16 +91,32 @@ public class KaitaiSpec2AsciidocConverter {
         //dot -Tsvg rs232test_2.dot > image.svg
         ///tmp/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler --target graphviz x.ksy
         
+        //Default command (defined in docker image)
+        //String kaitaiCommand = "/kaitai/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler";
+        
+        String kaitaiCommand = "/home/hcadavid/apps/kaitai/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler";
+        
         Path outputPath = Paths.get(System.getProperty("OUTPUT_PATH"));
         
-        String kaitaiSpecId=getKaitaiSpecId(kaitaiSpecFile);
+        Object kaitaiSpec = parseYamlFile(kaitaiSpecFile);
+        
+        String kaitaiSpecId=getKaitaiSpecId(kaitaiSpec);
+        
+        if (!isEndiannessDefined(kaitaiSpec)){
+            throw new MalformedKaitaiSpecificationException("The RS232 bitwise encoding definition does not explicitly define endiannes.");
+        }
         
         //System.out.println("ID:"+kaitaiSpecId);
         
         Path tempOutputFolder = Files.createTempDirectory("kaitai-svg-output-");
-                
-        CommandRunner.runCommand("/home/hcadavid/apps/kaitai/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler", "--target", "graphviz", "--outdir",tempOutputFolder.toString() , kaitaiSpecFile.getAbsolutePath());
 
+        //Generate header
+        DocProcessLogger.getInstance().log("Generating C header for handling bitwise encoding: "+kaitaiSpecId, Severity.INFO);
+        CommandRunner.runCommand(kaitaiCommand, "--target", "cpp_stl", "--outdir",outputPath.toString() , kaitaiSpecFile.getAbsolutePath());        
+        
+        
+        CommandRunner.runCommand(kaitaiCommand, "--target", "graphviz", "--outdir",tempOutputFolder.toString() , kaitaiSpecFile.getAbsolutePath());
+        
         CommandRunner.runCommand("dot", "-Tsvg", tempOutputFolder.resolve(kaitaiSpecId+".dot").toFile().getAbsolutePath(), "-O" );
                        
         //.dov.csv file
@@ -98,6 +134,15 @@ public class KaitaiSpec2AsciidocConverter {
         newOutputAsciidocLines.add("]");
         
         DocProcessLogger.getInstance().log("Generating Graphviz representation of bitwise encoding: "+kaitaiSpecId, Severity.INFO);
+
+        String copyHeaderButtonAction =  
+                "var headerName='%s';var url = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+'/'+headerName;" +
+                "navigator.clipboard.writeText(url);"+
+                "if (confirm('Copy the location of the generated header file to your clipboard? ('+url+')') == true) {"+
+                "    navigator.clipboard.writeText(url); }";
+                
+                       
+        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy generated header file location to your clipboard\"          onClick=\""+copyHeaderButtonAction+"\">Copy header's file location</button>]",kaitaiSpecId+".h"));
         
         asccidocProcessor.parseContent(parent, newOutputAsciidocLines);
 
