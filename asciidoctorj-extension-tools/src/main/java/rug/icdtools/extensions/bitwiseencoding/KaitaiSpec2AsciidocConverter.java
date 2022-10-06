@@ -92,9 +92,10 @@ public class KaitaiSpec2AsciidocConverter {
         ///tmp/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler --target graphviz x.ksy
         
         //Default command (defined in docker image)
-        //String kaitaiCommand = "/kaitai/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler";
+        //TODO add environment variable for KAITAI location to make this context independent
+        String kaitaiCommand = "/kaitai/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler";
         
-        String kaitaiCommand = "/home/hcadavid/apps/kaitai/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler";
+        //String kaitaiCommand = "/home/hcadavid/apps/kaitai/kaitai-struct-compiler-0.10/bin/kaitai-struct-compiler";
         
         Path outputPath = Paths.get(System.getProperty("OUTPUT_PATH"));
         
