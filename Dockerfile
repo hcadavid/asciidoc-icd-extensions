@@ -24,7 +24,6 @@ RUN apk add --update nodejs nodejs-npm
 
 #RUN npm install -g netlify-cli --unsafe-perm=true
 
-
 RUN apk add ttf-dejavu
 RUN apk add graphviz
 RUN apk add tree

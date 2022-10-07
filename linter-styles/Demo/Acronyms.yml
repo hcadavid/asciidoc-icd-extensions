@@ -1,7 +1,8 @@
 extends: conditional
 message: "'%s' has no definition. Use the syntax acr:ACRONYM[context=CONTEXT] to automatically include its definition from the glossary"
 link: https://docs.microsoft.com/en-us/style-guide/acronyms
-level: suggestion
+level: error
+#level: suggestion
 ignorecase: false
 # Ensures that the existence of 'first' implies the existence of 'second'.
 first: '\b([A-Z]{3,5})\b'
