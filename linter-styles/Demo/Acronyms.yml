@@ -19,6 +19,7 @@ exceptions:
   - DEBUG
   - DOM
   - DPI
+  - NOT
   - FAQ
   - GCC
   - GDB
@@ -64,3 +65,8 @@ exceptions:
   - XSS
   - YAML
   - ZIP
+  - FPGA
+  - CRC
+  - ZERO
+  - FIS
+  - MASPS

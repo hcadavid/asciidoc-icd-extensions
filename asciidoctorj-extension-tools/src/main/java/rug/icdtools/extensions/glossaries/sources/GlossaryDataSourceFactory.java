@@ -41,6 +41,19 @@ public class GlossaryDataSourceFactory {
         acronyms.put("LOFAR2.0 DUPLLO", "LOFAR after upgrading according to the DUPLLO plan");
         acronyms.put("LOFAR2.0 SW", "LOFAR after upgrading according to the DUPLLO plan and after the Space Weather proposal extension");
         acronyms.put("LOFAR4SW", "LOFAR for Space Weather project");
+        acronyms.put("UCP", "Universal Computer Protocol (UCP) is a standard for transmitting short messages over cellular networks. ");
+        acronyms.put("HDLC", "High-Level Data Link Control (HDLC) is a bit-oriented code-transparent synchronous data link layer protocol");
+        acronyms.put("RTCA", "Radio Technical Commission for Aeronautics");
+        acronyms.put("AXI", "Advanced eXtensible Interface (AXI), is an on-chip communication bus protocol developed by ARM");
+        acronyms.put("MSB", "The most significant bit (MSB) is the bit in a multiple-bit binary number with the largest value.");
+        acronyms.put("CCITT", "CCITT means the Consultative Committee for International Telegraphy and Telephony, a constituent of the International Telecommunications Union (ITU)");
+        acronyms.put("GNSS", "Global Navigation Satellite System (GNSS)");
+        acronyms.put("NIC", "Network Interface Card (NIC)");
+        acronyms.put("MSB", "The most significant bit (MSB) is the bit in a multiple-bit binary number with the largest value.");
+        acronyms.put("HPL", "HPL is the abbreviation for High Pressure Laminate. HPL is made up of several layers that are compressed (laminated) under very high pressure.");
+        acronyms.put("HFOM", "Horizontal Figure of Merit");
+
+        
     }
 
     public static GlossaryDataSource getDataSource(){
