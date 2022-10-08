@@ -161,7 +161,7 @@ public class KaitaiSpec2AsciidocConverter {
                 "    navigator.clipboard.writeText(url); }";
                 
                        
-        newOutputAsciidocLines.add(String.format("pass:[<button title =\"Copy generated header file location to your clipboard\"          onClick=\""+copyHeaderButtonAction+"\">Copy header's file location</button>]",kaitaiSpecId+".h"));
+        newOutputAsciidocLines.add(String.format("pass:[<br><button title =\"Copy generated header file location to your clipboard\"          onClick=\""+copyHeaderButtonAction+"\">Copy header's file location</button>]",kaitaiSpecId+".h"));
         
         asccidocProcessor.parseContent(parent, newOutputAsciidocLines);
 
