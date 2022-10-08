@@ -139,6 +139,8 @@ public class KaitaiSpec2AsciidocConverter {
         newOutputAsciidocLines.add(table);
         newOutputAsciidocLines.add("]");
         
+        newOutputAsciidocLines.add("<h4>Bitwise encoding diagram</h4>");        
+        
         //Embed SVG representation of the bitwise encoding        
         newOutputAsciidocLines.add("pass:[");
         
