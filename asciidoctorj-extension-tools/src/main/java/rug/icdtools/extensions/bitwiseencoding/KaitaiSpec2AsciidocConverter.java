@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang.StringUtils;
 
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BaseProcessor;
@@ -82,6 +84,10 @@ public class KaitaiSpec2AsciidocConverter {
                 
     }                
      
+    static String readFileToString(File file, Charset encoding) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+        return new String(encoded, encoding);
+    }
     
     
     public static void convertAndAddToOutput(File kaitaiSpecFile, StructuralNode parent, BaseProcessor asccidocProcessor) throws CommandGeneratedException, FileNotFoundException, IOException, CommandExecutionException, MalformedKaitaiSpecificationException {
@@ -115,15 +121,25 @@ public class KaitaiSpec2AsciidocConverter {
         DocProcessLogger.getInstance().log("Generating C header for handling bitwise encoding: "+kaitaiSpecId, Severity.INFO);
         CommandRunner.runCommand(kaitaiCommand, "--target", "cpp_stl", "--outdir",outputPath.toString() , kaitaiSpecFile.getAbsolutePath());        
         
-        
+        CommandRunner.runCommand(kaitaiCommand, "--target", "html", "--outdir",tempOutputFolder.toString() , kaitaiSpecFile.getAbsolutePath());        
+
         CommandRunner.runCommand(kaitaiCommand, "--target", "graphviz", "--outdir",tempOutputFolder.toString() , kaitaiSpecFile.getAbsolutePath());
         
         CommandRunner.runCommand("dot", "-Tsvg", tempOutputFolder.resolve(kaitaiSpecId+".dot").toFile().getAbsolutePath(), "-O" );
-                       
-        //.dov.csv file
-
+                               
         List<String> newOutputAsciidocLines=new LinkedList<>();
         
+        //Embed html representation of the bitwise encoding
+        String htmlRepresentation = readFileToString(tempOutputFolder.resolve(kaitaiSpecId+".html").toFile(),Charset.defaultCharset());
+        String table = StringUtils.substringBetween(htmlRepresentation, "<div class=\"container\">", "</div>");
+        //change table headers' size
+        table = table.replaceAll("<\\/h[12]>", "</h4>").replaceAll("<h[12]>", "<h4>");
+        
+        newOutputAsciidocLines.add("pass:[");
+        newOutputAsciidocLines.add(table);
+        newOutputAsciidocLines.add("]");
+        
+        //Embed SVG representation of the bitwise encoding        
         newOutputAsciidocLines.add("pass:[");
         
         try ( Scanner s = new Scanner(tempOutputFolder.resolve(kaitaiSpecId+".dot.svg").toFile())) {
